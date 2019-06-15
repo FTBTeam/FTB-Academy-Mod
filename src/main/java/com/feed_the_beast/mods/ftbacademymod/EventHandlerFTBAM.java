@@ -17,6 +17,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.template.PlacementSettings;
 import net.minecraft.world.gen.structure.template.Template;
+import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -24,7 +25,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -33,6 +37,7 @@ import java.util.Map;
 @Mod.EventBusSubscriber(modid = FTBAcademyMod.MOD_ID)
 public class EventHandlerFTBAM
 {
+	private static final Collection<String> ALLOWED_COMMANDS = new HashSet<>(Arrays.asList("quit_school", "w", "msg", "tell"));
 	private static Template template = null;
 	private static BlockPos spawn = null;
 	private static HashMap<BlockPos, SpecialBlockPlacement> special = null;
@@ -151,5 +156,14 @@ public class EventHandlerFTBAM
 	public static void onPlayerClone(net.minecraftforge.event.entity.player.PlayerEvent.Clone event)
 	{
 		FTBAcademyMod.setTutorialPhase(event.getEntityPlayer(), FTBAcademyMod.getTutorialPhase(event.getOriginal()));
+	}
+
+	@SubscribeEvent
+	public static void onCommand(CommandEvent event)
+	{
+		if (event.getSender() instanceof EntityPlayerMP && FTBAcademyMod.getTutorialPhase((EntityPlayerMP) event.getSender()) == 1 && !ALLOWED_COMMANDS.contains(event.getCommand().getName()))
+		{
+			event.setCanceled(true);
+		}
 	}
 }

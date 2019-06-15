@@ -28,6 +28,7 @@ public class WorldProviderFTBAM extends WorldProvider
 		hasSkyLight = true;
 		biomeProvider = new BiomeProviderSingle(FTBAcademyMod.dimensionBiome);
 		schoolsSpawned = world.getWorldInfo().getDimensionData(world.provider.getDimension()).getInteger("islands_spawned");
+		setAllowedSpawnTypes(false, false);
 	}
 
 	@Override
