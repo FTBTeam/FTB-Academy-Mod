@@ -1,1 +1,1 @@
-# FTB-Academy-Mod
+# FTB Academy Mod [![](http://cf.way2muchnoise.eu/ftb-academy-mod.svg)](https://minecraft.curseforge.com/projects/ftb-academy-mod) [![](http://cf.way2muchnoise.eu/versions/ftb-academy-mod.svg)](https://minecraft.curseforge.com/projects/ftb-academy-mod)

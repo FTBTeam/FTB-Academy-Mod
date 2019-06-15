@@ -1,0 +1,17 @@
+[
+	{
+		"modid": "ftbacademymod",
+		"name": "FTB Academy Mod",
+		"description": "",
+		"version": "${version}",
+		"mcversion": "${mcversion}",
+		"url": "http://minecraft.curseforge.com/projects/ftb-academy-mod",
+		"updateUrl": "",
+		"authorList": ["LatvianModder"],
+		"credits": "",
+		"logoFile": "assets/ftbacademymod/textures/logo.png",
+		"screenshots": [],
+		"parent": "",
+		"dependencies": []
+	}
+]
