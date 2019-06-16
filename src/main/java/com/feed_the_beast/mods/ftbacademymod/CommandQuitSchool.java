@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 
 /**
@@ -74,6 +75,7 @@ public class CommandQuitSchool extends CommandBase
 			player.inventoryContainer.detectAndSendChanges();
 			TeleporterDimPos.of(spawnpoint, world.provider.getDimension()).teleport(player);
 			player.setSpawnPoint(spawnpoint, false);
+			player.setGameType(GameType.SURVIVAL);
 		}
 	}
 }

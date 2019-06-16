@@ -13,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.template.PlacementSettings;
@@ -149,6 +150,7 @@ public class EventHandlerFTBAM
 		TeleporterDimPos.of(pos.add(spawn), world.provider.getDimension()).teleport(playerMP);
 		playerMP.setSpawnPoint(pos.add(spawn), true);
 		FTBAcademyMod.setTutorialPhase(playerMP, 1);
+		playerMP.setGameType(GameType.ADVENTURE);
 		provider.schoolsSpawned++;
 	}
 
