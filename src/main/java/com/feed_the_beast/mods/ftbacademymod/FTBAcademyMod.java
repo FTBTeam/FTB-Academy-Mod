@@ -3,6 +3,7 @@ package com.feed_the_beast.mods.ftbacademymod;
 import com.feed_the_beast.ftblib.FTBLib;
 import com.feed_the_beast.ftblib.lib.util.NBTUtils;
 import com.feed_the_beast.ftbquests.FTBQuests;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Biomes;
 import net.minecraft.util.ResourceLocation;
@@ -14,6 +15,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 @Mod(
 		modid = FTBAcademyMod.MOD_ID,
@@ -29,6 +31,9 @@ public class FTBAcademyMod
 
 	public static DimensionType dimensionType;
 	public static Biome dimensionBiome;
+
+	@GameRegistry.ObjectHolder(MOD_ID + ":mana_detector")
+	public static Block MANA_DETECTOR;
 
 	@Mod.EventHandler
 	public void onPreInit(FMLPreInitializationEvent event)
@@ -53,6 +58,7 @@ public class FTBAcademyMod
 	public void onServerStarting(FMLServerStartingEvent event)
 	{
 		event.registerServerCommand(new CommandQuitSchool());
+		event.registerServerCommand(new CommandResetSchool());
 	}
 
 	public static int getTutorialPhase(EntityPlayer player)

@@ -52,7 +52,7 @@ public class CommandQuitSchool extends CommandBase
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
 	{
-		EntityPlayerMP player = args.length > 0 && sender.canUseCommand(2, "quit_school") ? getPlayer(server, sender, args[0]) : getCommandSenderAsPlayer(sender);
+		EntityPlayerMP player = args.length > 0 && !(sender instanceof EntityPlayerMP) ? getPlayer(server, sender, args[0]) : getCommandSenderAsPlayer(sender);
 
 		if (FTBAcademyMod.getTutorialPhase(player) == 1)
 		{
