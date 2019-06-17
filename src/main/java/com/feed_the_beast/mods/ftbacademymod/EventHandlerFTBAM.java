@@ -2,7 +2,7 @@ package com.feed_the_beast.mods.ftbacademymod;
 
 import com.feed_the_beast.ftblib.events.player.ForgePlayerLoggedInEvent;
 import com.feed_the_beast.ftblib.lib.math.TeleporterDimPos;
-import com.feed_the_beast.ftbquests.quest.QuestFile;
+import com.feed_the_beast.ftbquests.quest.ServerQuestFile;
 import com.feed_the_beast.mods.ftbacademymod.blocks.BlockManaDetector;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialBlockPlacement;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialDetector;
@@ -67,6 +67,7 @@ public class EventHandlerFTBAM
 		}
 	}
 
+	@SuppressWarnings("AccessStaticViaInstance")
 	public static void teleportToIsland(EntityPlayerMP playerMP)
 	{
 		if (template == null)
@@ -110,13 +111,13 @@ public class EventHandlerFTBAM
 						spawnFacing = EnumFacing.byName(map.getOrDefault("facing", "north"));
 						break;
 					case "detector":
-						special.put(entry.getKey(), new SpecialDetector(QuestFile.getID(map.getOrDefault("id", ""))));
+						special.put(entry.getKey(), new SpecialDetector(ServerQuestFile.INSTANCE.getID(map.getOrDefault("id", ""))));
 						break;
 					case "task_screen":
-						special.put(entry.getKey(), new SpecialTaskScreen(QuestFile.getID(map.getOrDefault("id", "")), EnumFacing.byName(map.getOrDefault("facing", "north"))));
+						special.put(entry.getKey(), new SpecialTaskScreen(ServerQuestFile.INSTANCE.getID(map.getOrDefault("id", "")), EnumFacing.byName(map.getOrDefault("facing", "north"))));
 						break;
 					case "mana_detector":
-						special.put(entry.getKey(), new SpecialManaDetector(QuestFile.getID(map.getOrDefault("id", "")), Integer.parseInt(map.getOrDefault("dist", "2"))));
+						special.put(entry.getKey(), new SpecialManaDetector(ServerQuestFile.INSTANCE.getID(map.getOrDefault("id", "")), Integer.parseInt(map.getOrDefault("dist", "2"))));
 						break;
 				}
 			}
