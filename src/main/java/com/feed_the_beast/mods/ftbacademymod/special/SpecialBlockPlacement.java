@@ -1,4 +1,4 @@
-package com.feed_the_beast.mods.ftbacademymod;
+package com.feed_the_beast.mods.ftbacademymod.special;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;

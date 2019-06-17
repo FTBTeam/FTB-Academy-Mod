@@ -1,3 +1,5 @@
+tile.ftbacademymod.detector.name=FTB Academy Detector
+
 commands.quit_school.usage=/quit_school [player]
 commands.reset_school.usage=/reset_school [player]
 

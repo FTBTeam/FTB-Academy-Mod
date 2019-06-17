@@ -1,53 +1,32 @@
 package com.feed_the_beast.mods.ftbacademymod.blocks;
 
 import com.feed_the_beast.ftblib.lib.data.FTBLibAPI;
+import com.feed_the_beast.ftbquests.net.edit.MessageChangeProgressResponse;
+import com.feed_the_beast.ftbquests.quest.EnumChangeProgress;
 import com.feed_the_beast.ftbquests.quest.ITeamData;
 import com.feed_the_beast.ftbquests.quest.QuestObject;
 import com.feed_the_beast.ftbquests.quest.ServerQuestFile;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-import java.util.Collections;
 import java.util.UUID;
 
 /**
  * @author LatvianModder
  */
-public class BlockManaDetector extends Block
+public class BlockManaDetector extends BlockDetectorBase
 {
 	public static final ResourceLocation POOL_ID = new ResourceLocation("botania:pool");
-
-	public BlockManaDetector()
-	{
-		super(Material.BARRIER);
-		setBlockUnbreakable();
-	}
-
-	@Override
-	public boolean hasTileEntity(IBlockState state)
-	{
-		return true;
-	}
 
 	@Override
 	public TileEntity createTileEntity(World world, IBlockState state)
 	{
 		return new Entity();
-	}
-
-	@Override
-	@Deprecated
-	public EnumBlockRenderType getRenderType(IBlockState state)
-	{
-		return EnumBlockRenderType.INVISIBLE;
 	}
 
 	public static class Entity extends TileEntity implements ITickable
@@ -66,16 +45,15 @@ public class BlockManaDetector extends Block
 				if (tileEntity != null && POOL_ID.equals(TileEntity.getKey(tileEntity.getClass())) && tileEntity.writeToNBT(new NBTTagCompound()).getLong("mana") > 0L)
 				{
 					QuestObject object = ServerQuestFile.INSTANCE.get(id);
+					ITeamData data = ServerQuestFile.INSTANCE.getData(FTBLibAPI.getTeam(player));
 
-					if (object != null)
+					if (object != null && data != null)
 					{
-						ITeamData data = ServerQuestFile.INSTANCE.getData(FTBLibAPI.getTeam(player));
-
-						if (data != null)
-						{
-							object.onCompleted(data, Collections.emptyList());
-							world.setBlockToAir(pos);
-						}
+						EnumChangeProgress.sendUpdates = false;
+						object.changeProgress(data, EnumChangeProgress.COMPLETE);
+						EnumChangeProgress.sendUpdates = true;
+						new MessageChangeProgressResponse(data.getTeamUID(), object.id, EnumChangeProgress.COMPLETE).sendToAll();
+						world.setBlockToAir(pos);
 					}
 				}
 			}

@@ -1,21 +1,17 @@
 package com.feed_the_beast.mods.ftbacademymod;
 
 import com.feed_the_beast.ftblib.events.player.ForgePlayerLoggedInEvent;
-import com.feed_the_beast.ftblib.lib.data.FTBLibAPI;
 import com.feed_the_beast.ftblib.lib.math.TeleporterDimPos;
-import com.feed_the_beast.ftbquests.block.FTBQuestsBlocks;
-import com.feed_the_beast.ftbquests.quest.QuestObject;
-import com.feed_the_beast.ftbquests.quest.ServerQuestFile;
-import com.feed_the_beast.ftbquests.quest.task.QuestTask;
-import com.feed_the_beast.ftbquests.tile.TileProgressDetector;
-import com.feed_the_beast.ftbquests.tile.TileTaskScreenCore;
+import com.feed_the_beast.ftbquests.quest.QuestFile;
 import com.feed_the_beast.mods.ftbacademymod.blocks.BlockManaDetector;
+import com.feed_the_beast.mods.ftbacademymod.special.SpecialBlockPlacement;
+import com.feed_the_beast.mods.ftbacademymod.special.SpecialDetector;
+import com.feed_the_beast.mods.ftbacademymod.special.SpecialManaDetector;
+import com.feed_the_beast.mods.ftbacademymod.special.SpecialTaskScreen;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockHorizontal;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -114,57 +110,13 @@ public class EventHandlerFTBAM
 						spawnFacing = EnumFacing.byName(map.getOrDefault("facing", "north"));
 						break;
 					case "detector":
-						special.put(entry.getKey(), (world, pos, player) -> {
-							QuestObject object = ServerQuestFile.INSTANCE.get(ServerQuestFile.INSTANCE.getID(map.getOrDefault("id", "")));
-							String team = FTBLibAPI.getTeam(player.getUniqueID());
-
-							if (object != null && !team.isEmpty())
-							{
-								world.setBlockState(pos, FTBQuestsBlocks.PROGRESS_DETECTOR.getDefaultState(), 3);
-								TileEntity tileEntity = world.getTileEntity(pos);
-
-								if (tileEntity instanceof TileProgressDetector)
-								{
-									((TileProgressDetector) tileEntity).team = team;
-									((TileProgressDetector) tileEntity).object = object.id;
-								}
-							}
-						});
+						special.put(entry.getKey(), new SpecialDetector(QuestFile.getID(map.getOrDefault("id", ""))));
 						break;
 					case "task_screen":
-						special.put(entry.getKey(), (world, pos, player) -> {
-							QuestTask task = ServerQuestFile.INSTANCE.getTask(ServerQuestFile.INSTANCE.getID(map.getOrDefault("id", "")));
-							String team = FTBLibAPI.getTeam(player.getUniqueID());
-
-							if (task != null && !team.isEmpty())
-							{
-								EnumFacing facing = EnumFacing.byName(map.getOrDefault("facing", "north"));
-								world.setBlockState(pos, FTBQuestsBlocks.SCREEN.getDefaultState().withProperty(BlockHorizontal.FACING, facing), 3);
-								TileEntity tileEntity = world.getTileEntity(pos);
-
-								if (tileEntity instanceof TileTaskScreenCore)
-								{
-									TileTaskScreenCore screen = (TileTaskScreenCore) tileEntity;
-									screen.team = team;
-									screen.quest = task.quest.id;
-									screen.task = task.id;
-								}
-							}
-						});
+						special.put(entry.getKey(), new SpecialTaskScreen(QuestFile.getID(map.getOrDefault("id", "")), EnumFacing.byName(map.getOrDefault("facing", "north"))));
 						break;
 					case "mana_detector":
-						special.put(entry.getKey(), (world, pos, player) -> {
-							world.setBlockState(pos, FTBAcademyMod.MANA_DETECTOR.getDefaultState(), 3);
-							TileEntity tileEntity = world.getTileEntity(pos);
-
-							if (tileEntity instanceof BlockManaDetector.Entity)
-							{
-								BlockManaDetector.Entity manaDetector = (BlockManaDetector.Entity) tileEntity;
-								manaDetector.id = ServerQuestFile.INSTANCE.getID(map.getOrDefault("id", ""));
-								manaDetector.player = player.getUniqueID();
-								manaDetector.distance = Integer.parseInt(map.getOrDefault("dist", "2"));
-							}
-						});
+						special.put(entry.getKey(), new SpecialManaDetector(QuestFile.getID(map.getOrDefault("id", "")), Integer.parseInt(map.getOrDefault("dist", "2"))));
 						break;
 				}
 			}
