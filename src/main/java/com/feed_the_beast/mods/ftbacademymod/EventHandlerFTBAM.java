@@ -2,10 +2,15 @@ package com.feed_the_beast.mods.ftbacademymod;
 
 import com.feed_the_beast.ftblib.events.player.ForgePlayerLoggedInEvent;
 import com.feed_the_beast.ftblib.lib.math.TeleporterDimPos;
+import com.feed_the_beast.ftbquests.net.edit.MessageChangeProgressResponse;
+import com.feed_the_beast.ftbquests.quest.EnumChangeProgress;
+import com.feed_the_beast.ftbquests.quest.ITeamData;
 import com.feed_the_beast.ftbquests.quest.ServerQuestFile;
+import com.feed_the_beast.mods.ftbacademymod.blocks.BlockDuctDetector;
 import com.feed_the_beast.mods.ftbacademymod.blocks.BlockManaDetector;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialBlockPlacement;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialDetector;
+import com.feed_the_beast.mods.ftbacademymod.special.SpecialDuctDetector;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialManaDetector;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialTaskScreen;
 import net.minecraft.block.Block;
@@ -52,8 +57,10 @@ public class EventHandlerFTBAM
 	public static void registerBlocks(RegistryEvent.Register<Block> event)
 	{
 		event.getRegistry().register(new BlockManaDetector().setRegistryName("mana_detector"));
+		event.getRegistry().register(new BlockDuctDetector().setRegistryName("duct_detector"));
 
 		GameRegistry.registerTileEntity(BlockManaDetector.Entity.class, new ResourceLocation(FTBAcademyMod.MOD_ID, "mana_detector"));
+		GameRegistry.registerTileEntity(BlockDuctDetector.Entity.class, new ResourceLocation(FTBAcademyMod.MOD_ID, "duct_detector"));
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOW)
@@ -119,6 +126,9 @@ public class EventHandlerFTBAM
 					case "mana_detector":
 						special.put(entry.getKey(), new SpecialManaDetector(ServerQuestFile.INSTANCE.getID(map.getOrDefault("id", "")), Integer.parseInt(map.getOrDefault("dist", "2"))));
 						break;
+					case "duct_detector":
+						special.put(entry.getKey(), new SpecialDuctDetector(ServerQuestFile.INSTANCE.getID(map.getOrDefault("id", "")), Integer.parseInt(map.getOrDefault("dist", "2")), map.getOrDefault("variant", "")));
+						break;
 				}
 			}
 		}
@@ -142,6 +152,16 @@ public class EventHandlerFTBAM
 		for (Map.Entry<BlockPos, SpecialBlockPlacement> entry : special.entrySet())
 		{
 			entry.getValue().place(world, pos.add(entry.getKey()), playerMP);
+		}
+
+		ITeamData teamData = ServerQuestFile.INSTANCE.getData(playerMP);
+
+		if (teamData != null)
+		{
+			EnumChangeProgress.sendUpdates = false;
+			ServerQuestFile.INSTANCE.changeProgress(teamData, EnumChangeProgress.RESET);
+			EnumChangeProgress.sendUpdates = true;
+			new MessageChangeProgressResponse(teamData.getTeamUID(), ServerQuestFile.INSTANCE.id, EnumChangeProgress.RESET).sendToAll();
 		}
 
 		playerMP.inventory.clear();
