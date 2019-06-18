@@ -2,6 +2,7 @@ package com.feed_the_beast.mods.ftbacademymod;
 
 import com.feed_the_beast.ftblib.events.player.ForgePlayerLoggedInEvent;
 import com.feed_the_beast.ftblib.lib.math.TeleporterDimPos;
+import com.feed_the_beast.ftbquests.item.FTBQuestsItems;
 import com.feed_the_beast.ftbquests.net.edit.MessageChangeProgressResponse;
 import com.feed_the_beast.ftbquests.quest.EnumChangeProgress;
 import com.feed_the_beast.ftbquests.quest.ITeamData;
@@ -16,7 +17,10 @@ import com.feed_the_beast.mods.ftbacademymod.special.SpecialTaskScreen;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -154,17 +158,22 @@ public class EventHandlerFTBAM
 			entry.getValue().place(world, pos.add(entry.getKey()), playerMP);
 		}
 
-		ITeamData teamData = ServerQuestFile.INSTANCE.getData(playerMP);
+		ITeamData data = ServerQuestFile.INSTANCE.getData(playerMP);
 
-		if (teamData != null)
+		if (data != null)
 		{
 			EnumChangeProgress.sendUpdates = false;
-			ServerQuestFile.INSTANCE.changeProgress(teamData, EnumChangeProgress.RESET);
+			ServerQuestFile.INSTANCE.changeProgress(data, EnumChangeProgress.RESET);
 			EnumChangeProgress.sendUpdates = true;
-			new MessageChangeProgressResponse(teamData.getTeamUID(), ServerQuestFile.INSTANCE.id, EnumChangeProgress.RESET).sendToAll();
+			new MessageChangeProgressResponse(data.getTeamUID(), ServerQuestFile.INSTANCE.id, EnumChangeProgress.RESET).sendToAll();
 		}
 
 		playerMP.inventory.clear();
+		playerMP.inventory.addItemStackToInventory(new ItemStack(FTBQuestsItems.BOOK));
+		ItemStack guideBook = new ItemStack(Items.BOOK);
+		guideBook.setTagInfo("guide", new NBTTagString(""));
+		guideBook.setTranslatableName("item.ftbguides.book.name");
+		playerMP.inventory.addItemStackToInventory(guideBook);
 		TeleporterDimPos.of(pos.add(spawn), world.provider.getDimension()).teleport(playerMP);
 		playerMP.connection.setPlayerLocation(playerMP.posX, playerMP.posY, playerMP.posZ, spawnFacing.getHorizontalAngle(), 0F);
 		playerMP.setSpawnPoint(pos.add(spawn), true);

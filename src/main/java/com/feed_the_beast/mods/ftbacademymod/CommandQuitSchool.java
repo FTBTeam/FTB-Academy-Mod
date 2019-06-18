@@ -2,6 +2,11 @@ package com.feed_the_beast.mods.ftbacademymod;
 
 import com.feed_the_beast.ftblib.lib.math.TeleporterDimPos;
 import com.feed_the_beast.ftbquests.item.FTBQuestsItems;
+import com.feed_the_beast.ftbquests.net.edit.MessageChangeProgressResponse;
+import com.feed_the_beast.ftbquests.quest.EnumChangeProgress;
+import com.feed_the_beast.ftbquests.quest.ITeamData;
+import com.feed_the_beast.ftbquests.quest.QuestObject;
+import com.feed_the_beast.ftbquests.quest.ServerQuestFile;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -72,6 +77,22 @@ public class CommandQuitSchool extends CommandBase
 			guideBook.setTagInfo("guide", new NBTTagString(""));
 			guideBook.setTranslatableName("item.ftbguides.book.name");
 			player.inventory.addItemStackToInventory(guideBook);
+
+			QuestObject object = ServerQuestFile.INSTANCE.get(ConfigFTBAM.general.quit_school_complete_id);
+
+			if (object != null)
+			{
+				ITeamData data = ServerQuestFile.INSTANCE.getData(player);
+
+				if (data != null)
+				{
+					EnumChangeProgress.sendUpdates = false;
+					object.changeProgress(data, EnumChangeProgress.COMPLETE);
+					EnumChangeProgress.sendUpdates = true;
+					new MessageChangeProgressResponse(data.getTeamUID(), object.id, EnumChangeProgress.COMPLETE).sendToAll();
+				}
+			}
+
 			player.inventoryContainer.detectAndSendChanges();
 			TeleporterDimPos.of(spawnpoint, world.provider.getDimension()).teleport(player);
 			player.setSpawnPoint(spawnpoint, false);
