@@ -36,18 +36,36 @@ public class BlockManaDetector extends BlockDetectorBase
 		public UUID player = new UUID(0, 0);
 
 		@Override
+		public NBTTagCompound writeToNBT(NBTTagCompound compound)
+		{
+			distance = compound.getInteger("dist");
+			id = compound.getInteger("object");
+			player = compound.getUniqueId("player");
+			return super.writeToNBT(compound);
+		}
+
+		@Override
+		public void readFromNBT(NBTTagCompound compound)
+		{
+			compound.setInteger("dist", distance);
+			compound.setInteger("object", id);
+			compound.setUniqueId("player", player);
+			super.readFromNBT(compound);
+		}
+
+		@Override
 		public void update()
 		{
 			if (!world.isRemote && world.getTotalWorldTime() % 20L == 0L)
 			{
-				TileEntity tileEntity = world.getTileEntity(pos.offset(EnumFacing.UP, distance));
+				QuestObject object = ServerQuestFile.INSTANCE.get(id);
+				ITeamData data = ServerQuestFile.INSTANCE.getData(FTBLibAPI.getTeam(player));
 
-				if (tileEntity != null && POOL_ID.equals(TileEntity.getKey(tileEntity.getClass())) && tileEntity.writeToNBT(new NBTTagCompound()).getLong("mana") > 0L)
+				if (object != null && data != null)
 				{
-					QuestObject object = ServerQuestFile.INSTANCE.get(id);
-					ITeamData data = ServerQuestFile.INSTANCE.getData(FTBLibAPI.getTeam(player));
+					TileEntity tileEntity = world.getTileEntity(pos.offset(EnumFacing.UP, distance));
 
-					if (object != null && data != null)
+					if (tileEntity != null && POOL_ID.equals(TileEntity.getKey(tileEntity.getClass())) && tileEntity.writeToNBT(new NBTTagCompound()).getLong("mana") > 0L)
 					{
 						EnumChangeProgress.sendUpdates = false;
 						object.changeProgress(data, EnumChangeProgress.COMPLETE);

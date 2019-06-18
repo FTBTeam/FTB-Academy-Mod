@@ -18,12 +18,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -45,18 +43,16 @@ public class BlockDuctDetector extends BlockDetectorBase
 		{
 			public final String id;
 			public final int damage;
-			public final NBTTagCompound nbt;
 
-			public FilterItem(String i, int d, @Nullable NBTTagCompound n)
+			public FilterItem(String i, int d)
 			{
 				id = i;
 				damage = d;
-				nbt = n;
 			}
 
 			public FilterItem(String i)
 			{
-				this(i, 0, null);
+				this(i, 0);
 			}
 
 			public FilterItem(IForgeRegistryEntry entry)
@@ -67,7 +63,7 @@ public class BlockDuctDetector extends BlockDetectorBase
 			@Override
 			public int hashCode()
 			{
-				return Objects.hash(id, damage, nbt);
+				return id.hashCode() + damage;
 			}
 
 			@Override
@@ -80,7 +76,7 @@ public class BlockDuctDetector extends BlockDetectorBase
 				else if (obj instanceof FilterItem)
 				{
 					FilterItem i = (FilterItem) obj;
-					return damage == i.damage && id.equals(i.id) && Objects.equals(nbt, i.nbt);
+					return damage == i.damage && id.equals(i.id);
 				}
 
 				return false;
@@ -93,16 +89,18 @@ public class BlockDuctDetector extends BlockDetectorBase
 
 			static
 			{
-				VARIANT_MAP.put("first", new FilterVariant(25, new FilterItem(Blocks.DIRT), new FilterItem(Blocks.IRON_ORE), new FilterItem(Blocks.GOLD_ORE), new FilterItem(Blocks.DIAMOND_ORE)));
-				VARIANT_MAP.put("second", new FilterVariant(24, new FilterItem(Blocks.DIRT)));
-				VARIANT_MAP.put("third", new FilterVariant(24, new FilterItem(Blocks.IRON_ORE), new FilterItem(Blocks.GOLD_ORE), new FilterItem(Blocks.DIAMOND_ORE)));
+				VARIANT_MAP.put("first", new FilterVariant("first", 25, new FilterItem(Blocks.DIRT), new FilterItem(Blocks.IRON_ORE), new FilterItem(Blocks.GOLD_ORE), new FilterItem(Blocks.DIAMOND_ORE)));
+				VARIANT_MAP.put("second", new FilterVariant("second", 24, new FilterItem(Blocks.DIRT)));
+				VARIANT_MAP.put("third", new FilterVariant("third", 24, new FilterItem(Blocks.IRON_ORE), new FilterItem(Blocks.GOLD_ORE), new FilterItem(Blocks.DIAMOND_ORE)));
 			}
 
+			public final String name;
 			public final int flags;
 			public final HashSet<FilterItem> items;
 
-			public FilterVariant(int f, FilterItem... i)
+			public FilterVariant(String n, int f, FilterItem... i)
 			{
+				name = n;
 				flags = f;
 				items = new HashSet<>(Arrays.asList(i));
 			}
@@ -114,18 +112,43 @@ public class BlockDuctDetector extends BlockDetectorBase
 		public FilterVariant variant = null;
 
 		@Override
+		public NBTTagCompound writeToNBT(NBTTagCompound compound)
+		{
+			distance = compound.getInteger("dist");
+			id = compound.getInteger("object");
+			player = compound.getUniqueId("player");
+			variant = FilterVariant.VARIANT_MAP.get(compound.getString("variant"));
+			return super.writeToNBT(compound);
+		}
+
+		@Override
+		public void readFromNBT(NBTTagCompound compound)
+		{
+			compound.setInteger("dist", distance);
+			compound.setInteger("object", id);
+			compound.setUniqueId("player", player);
+
+			if (variant != null)
+			{
+				compound.setString("variant", variant.name);
+			}
+
+			super.readFromNBT(compound);
+		}
+
+		@Override
 		public void update()
 		{
 			if (variant != null && !world.isRemote && world.getTotalWorldTime() % 20L == 0L)
 			{
-				TileEntity tileEntity = world.getTileEntity(pos.offset(EnumFacing.UP, distance));
+				QuestObject object = ServerQuestFile.INSTANCE.get(id);
+				ITeamData data = ServerQuestFile.INSTANCE.getData(FTBLibAPI.getTeam(player));
 
-				if (tileEntity != null && DUCT_ID.equals(TileEntity.getKey(tileEntity.getClass())))
+				if (object != null && data != null)
 				{
-					QuestObject object = ServerQuestFile.INSTANCE.get(id);
-					ITeamData data = ServerQuestFile.INSTANCE.getData(FTBLibAPI.getTeam(player));
+					TileEntity tileEntity = world.getTileEntity(pos.offset(EnumFacing.UP, distance));
 
-					if (object != null && data != null)
+					if (tileEntity != null && DUCT_ID.equals(TileEntity.getKey(tileEntity.getClass())))
 					{
 						NBTTagList attachments = tileEntity.writeToNBT(new NBTTagCompound()).getTagList("Attachments", Constants.NBT.TAG_COMPOUND);
 
@@ -142,7 +165,7 @@ public class BlockDuctDetector extends BlockDetectorBase
 								for (int i = 0; i < invList.tagCount(); i++)
 								{
 									NBTTagCompound nbt1 = invList.getCompoundTagAt(i);
-									inv.add(new FilterItem(nbt1.getString("id"), nbt1.getShort("Damage"), (NBTTagCompound) nbt1.getTag("tag")));
+									inv.add(new FilterItem(nbt1.getString("id"), nbt1.getShort("Damage")));
 								}
 
 								if (variant.items.equals(inv))
