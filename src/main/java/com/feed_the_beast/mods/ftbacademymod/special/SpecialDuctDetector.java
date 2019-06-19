@@ -26,16 +26,16 @@ public class SpecialDuctDetector implements SpecialBlockPlacement
 	@Override
 	public void place(World world, BlockPos pos, EntityPlayerMP player)
 	{
-		world.setBlockState(pos, FTBAcademyMod.MANA_DETECTOR.getDefaultState(), 3);
+		world.setBlockState(pos, FTBAcademyMod.DUCT_DETECTOR.getDefaultState(), 3);
 		TileEntity tileEntity = world.getTileEntity(pos);
 
 		if (tileEntity instanceof BlockDuctDetector.Entity)
 		{
-			BlockDuctDetector.Entity manaDetector = (BlockDuctDetector.Entity) tileEntity;
-			manaDetector.id = id;
-			manaDetector.player = player.getUniqueID();
-			manaDetector.distance = dist;
-			manaDetector.variant = BlockDuctDetector.Entity.FilterVariant.VARIANT_MAP.get(variant);
+			BlockDuctDetector.Entity ductDetector = (BlockDuctDetector.Entity) tileEntity;
+			ductDetector.id = id;
+			ductDetector.player = player.getUniqueID();
+			ductDetector.distance = dist;
+			ductDetector.variant = BlockDuctDetector.Entity.FilterVariant.VARIANT_MAP.get(variant);
 		}
 	}
 }

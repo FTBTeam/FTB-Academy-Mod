@@ -156,7 +156,7 @@ public class BlockDuctDetector extends BlockDetectorBase
 						{
 							NBTTagCompound nbt = attachments.getCompoundTagAt(0);
 
-							if (nbt.getInteger("Flags") == variant.flags)
+							if (nbt.getByte("Flags") == variant.flags)
 							{
 								HashSet<FilterItem> inv = new HashSet<>();
 

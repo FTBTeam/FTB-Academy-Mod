@@ -35,6 +35,9 @@ public class FTBAcademyMod
 	@GameRegistry.ObjectHolder(MOD_ID + ":mana_detector")
 	public static Block MANA_DETECTOR;
 
+	@GameRegistry.ObjectHolder(MOD_ID + ":duct_detector")
+	public static Block DUCT_DETECTOR;
+
 	@Mod.EventHandler
 	public void onPreInit(FMLPreInitializationEvent event)
 	{

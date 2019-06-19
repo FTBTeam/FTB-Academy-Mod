@@ -14,6 +14,6 @@ public class ConfigFTBAM
 	{
 		public int dimension_id = -3;
 		public String dimension_biome = "minecraft:plains";
-		public int quit_school_complete_id = 0;
+		public String quit_school_complete_id = "";
 	}
 }

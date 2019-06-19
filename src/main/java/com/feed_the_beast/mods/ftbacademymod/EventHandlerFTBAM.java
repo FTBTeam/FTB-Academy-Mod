@@ -3,9 +3,12 @@ package com.feed_the_beast.mods.ftbacademymod;
 import com.feed_the_beast.ftblib.events.player.ForgePlayerLoggedInEvent;
 import com.feed_the_beast.ftblib.lib.math.TeleporterDimPos;
 import com.feed_the_beast.ftbquests.item.FTBQuestsItems;
+import com.feed_the_beast.ftbquests.net.MessageDisplayRewardToast;
 import com.feed_the_beast.ftbquests.net.edit.MessageChangeProgressResponse;
 import com.feed_the_beast.ftbquests.quest.EnumChangeProgress;
 import com.feed_the_beast.ftbquests.quest.ITeamData;
+import com.feed_the_beast.ftbquests.quest.QuestFile;
+import com.feed_the_beast.ftbquests.quest.QuestObject;
 import com.feed_the_beast.ftbquests.quest.ServerQuestFile;
 import com.feed_the_beast.mods.ftbacademymod.blocks.BlockDuctDetector;
 import com.feed_the_beast.mods.ftbacademymod.blocks.BlockManaDetector;
@@ -24,6 +27,9 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
@@ -74,12 +80,11 @@ public class EventHandlerFTBAM
 
 		if (FTBAcademyMod.getTutorialPhase(playerMP) == 0)
 		{
-			teleportToIsland(playerMP);
+			teleportToSchool(playerMP);
 		}
 	}
 
-	@SuppressWarnings("AccessStaticViaInstance")
-	public static void teleportToIsland(EntityPlayerMP playerMP)
+	public static void teleportToSchool(EntityPlayerMP p)
 	{
 		if (template == null)
 		{
@@ -122,22 +127,22 @@ public class EventHandlerFTBAM
 						spawnFacing = EnumFacing.byName(map.getOrDefault("facing", "north"));
 						break;
 					case "detector":
-						special.put(entry.getKey(), new SpecialDetector(ServerQuestFile.INSTANCE.getID(map.getOrDefault("id", ""))));
+						special.put(entry.getKey(), new SpecialDetector(QuestFile.getID(map.getOrDefault("id", ""))));
 						break;
 					case "task_screen":
-						special.put(entry.getKey(), new SpecialTaskScreen(ServerQuestFile.INSTANCE.getID(map.getOrDefault("id", "")), EnumFacing.byName(map.getOrDefault("facing", "north"))));
+						special.put(entry.getKey(), new SpecialTaskScreen(QuestFile.getID(map.getOrDefault("id", "")), EnumFacing.byName(map.getOrDefault("facing", "north"))));
 						break;
 					case "mana_detector":
-						special.put(entry.getKey(), new SpecialManaDetector(ServerQuestFile.INSTANCE.getID(map.getOrDefault("id", "")), Integer.parseInt(map.getOrDefault("dist", "2"))));
+						special.put(entry.getKey(), new SpecialManaDetector(QuestFile.getID(map.getOrDefault("id", "")), Integer.parseInt(map.getOrDefault("dist", "2"))));
 						break;
 					case "duct_detector":
-						special.put(entry.getKey(), new SpecialDuctDetector(ServerQuestFile.INSTANCE.getID(map.getOrDefault("id", "")), Integer.parseInt(map.getOrDefault("dist", "2")), map.getOrDefault("variant", "")));
+						special.put(entry.getKey(), new SpecialDuctDetector(QuestFile.getID(map.getOrDefault("id", "")), Integer.parseInt(map.getOrDefault("dist", "2")), map.getOrDefault("variant", "")));
 						break;
 				}
 			}
 		}
 
-		World world = playerMP.server.getWorld(ConfigFTBAM.general.dimension_id);
+		World world = p.server.getWorld(ConfigFTBAM.general.dimension_id);
 
 		if (!(world.provider instanceof WorldProviderFTBAM))
 		{
@@ -155,10 +160,10 @@ public class EventHandlerFTBAM
 
 		for (Map.Entry<BlockPos, SpecialBlockPlacement> entry : special.entrySet())
 		{
-			entry.getValue().place(world, pos.add(entry.getKey()), playerMP);
+			entry.getValue().place(world, pos.add(entry.getKey()), p);
 		}
 
-		ITeamData data = ServerQuestFile.INSTANCE.getData(playerMP);
+		ITeamData data = ServerQuestFile.INSTANCE.getData(p);
 
 		if (data != null)
 		{
@@ -168,18 +173,67 @@ public class EventHandlerFTBAM
 			new MessageChangeProgressResponse(data.getTeamUID(), ServerQuestFile.INSTANCE.id, EnumChangeProgress.RESET).sendToAll();
 		}
 
-		playerMP.inventory.clear();
-		playerMP.inventory.addItemStackToInventory(new ItemStack(FTBQuestsItems.BOOK));
+		p.inventory.clear();
+		p.inventory.addItemStackToInventory(new ItemStack(FTBQuestsItems.BOOK));
 		ItemStack guideBook = new ItemStack(Items.BOOK);
 		guideBook.setTagInfo("guide", new NBTTagString(""));
 		guideBook.setTranslatableName("item.ftbguides.book.name");
-		playerMP.inventory.addItemStackToInventory(guideBook);
-		TeleporterDimPos.of(pos.add(spawn), world.provider.getDimension()).teleport(playerMP);
-		playerMP.connection.setPlayerLocation(playerMP.posX, playerMP.posY, playerMP.posZ, spawnFacing.getHorizontalAngle(), 0F);
-		playerMP.setSpawnPoint(pos.add(spawn), true);
-		FTBAcademyMod.setTutorialPhase(playerMP, 1);
-		playerMP.setGameType(GameType.ADVENTURE);
+		p.inventory.addItemStackToInventory(guideBook);
+		TeleporterDimPos.of(pos.add(spawn), world.provider.getDimension()).teleport(p);
+		p.connection.setPlayerLocation(p.posX, p.posY, p.posZ, spawnFacing.getHorizontalAngle(), 0F);
+		p.setSpawnPoint(pos.add(spawn), true);
+		p.setGameType(GameType.ADVENTURE);
+		FTBAcademyMod.setTutorialPhase(p, 1);
 		provider.schoolsSpawned++;
+	}
+
+	public static void finishSchool(EntityPlayerMP p)
+	{
+		World world = p.server.getWorld(0);
+
+		BlockPos spawnpoint = world.getSpawnPoint();
+
+		while (world.getBlockState(spawnpoint).isFullCube())
+		{
+			spawnpoint = spawnpoint.up(2);
+		}
+
+		p.inventory.clear();
+		p.inventory.addItemStackToInventory(new ItemStack(FTBQuestsItems.BOOK));
+		ItemStack guideBook = new ItemStack(Items.BOOK);
+		guideBook.setTagInfo("guide", new NBTTagString(""));
+		guideBook.setTranslatableName("item.ftbguides.book.name");
+		p.inventory.addItemStackToInventory(guideBook);
+
+		QuestObject object = ServerQuestFile.INSTANCE.get(QuestFile.getID(ConfigFTBAM.general.quit_school_complete_id));
+
+		if (object != null)
+		{
+			ITeamData data = ServerQuestFile.INSTANCE.getData(p);
+
+			if (data != null)
+			{
+				EnumChangeProgress.sendUpdates = false;
+				MessageDisplayRewardToast.ENABLED = false;
+				object.changeProgress(data, EnumChangeProgress.COMPLETE);
+				MessageDisplayRewardToast.ENABLED = true;
+				EnumChangeProgress.sendUpdates = true;
+				new MessageChangeProgressResponse(data.getTeamUID(), object.id, EnumChangeProgress.COMPLETE).sendToAll();
+			}
+		}
+
+		p.server.getCommandManager().executeCommand(p.server, "advancement revoke " + p.getName() + " everything");
+		p.server.getCommandManager().executeCommand(p.server, "as reset " + p.getName());
+
+		ITextComponent name = p.getDisplayName();
+		name.getStyle().setColor(TextFormatting.DARK_AQUA);
+		p.server.getPlayerList().sendMessage(new TextComponentTranslation("ftbacademymod.graduated", name));
+
+		p.inventoryContainer.detectAndSendChanges();
+		TeleporterDimPos.of(spawnpoint, world.provider.getDimension()).teleport(p);
+		p.setSpawnPoint(spawnpoint, false);
+		p.setGameType(GameType.SURVIVAL);
+		FTBAcademyMod.setTutorialPhase(p, 2);
 	}
 
 	@SubscribeEvent

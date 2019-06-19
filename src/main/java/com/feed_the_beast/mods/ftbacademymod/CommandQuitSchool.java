@@ -1,23 +1,10 @@
 package com.feed_the_beast.mods.ftbacademymod;
 
-import com.feed_the_beast.ftblib.lib.math.TeleporterDimPos;
-import com.feed_the_beast.ftbquests.item.FTBQuestsItems;
-import com.feed_the_beast.ftbquests.net.edit.MessageChangeProgressResponse;
-import com.feed_the_beast.ftbquests.quest.EnumChangeProgress;
-import com.feed_the_beast.ftbquests.quest.ITeamData;
-import com.feed_the_beast.ftbquests.quest.QuestObject;
-import com.feed_the_beast.ftbquests.quest.ServerQuestFile;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.GameType;
-import net.minecraft.world.World;
 
 /**
  * @author LatvianModder
@@ -57,46 +44,11 @@ public class CommandQuitSchool extends CommandBase
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
 	{
-		EntityPlayerMP player = args.length > 0 && !(sender instanceof EntityPlayerMP) ? getPlayer(server, sender, args[0]) : getCommandSenderAsPlayer(sender);
+		EntityPlayerMP playerMP = args.length > 0 && !(sender instanceof EntityPlayerMP) ? getPlayer(server, sender, args[0]) : getCommandSenderAsPlayer(sender);
 
-		if (FTBAcademyMod.getTutorialPhase(player) == 1)
+		if (FTBAcademyMod.getTutorialPhase(playerMP) == 1)
 		{
-			FTBAcademyMod.setTutorialPhase(player, 2);
-			World world = server.getWorld(0);
-
-			BlockPos spawnpoint = world.getSpawnPoint();
-
-			while (world.getBlockState(spawnpoint).isFullCube())
-			{
-				spawnpoint = spawnpoint.up(2);
-			}
-
-			player.inventory.clear();
-			player.inventory.addItemStackToInventory(new ItemStack(FTBQuestsItems.BOOK));
-			ItemStack guideBook = new ItemStack(Items.BOOK);
-			guideBook.setTagInfo("guide", new NBTTagString(""));
-			guideBook.setTranslatableName("item.ftbguides.book.name");
-			player.inventory.addItemStackToInventory(guideBook);
-
-			QuestObject object = ServerQuestFile.INSTANCE.get(ConfigFTBAM.general.quit_school_complete_id);
-
-			if (object != null)
-			{
-				ITeamData data = ServerQuestFile.INSTANCE.getData(player);
-
-				if (data != null)
-				{
-					EnumChangeProgress.sendUpdates = false;
-					object.changeProgress(data, EnumChangeProgress.COMPLETE);
-					EnumChangeProgress.sendUpdates = true;
-					new MessageChangeProgressResponse(data.getTeamUID(), object.id, EnumChangeProgress.COMPLETE).sendToAll();
-				}
-			}
-
-			player.inventoryContainer.detectAndSendChanges();
-			TeleporterDimPos.of(spawnpoint, world.provider.getDimension()).teleport(player);
-			player.setSpawnPoint(spawnpoint, false);
-			player.setGameType(GameType.SURVIVAL);
+			EventHandlerFTBAM.finishSchool(playerMP);
 		}
 	}
 }

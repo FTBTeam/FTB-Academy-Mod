@@ -4,3 +4,4 @@ commands.quit_school.usage=/quit_school [player]
 commands.reset_school.usage=/reset_school [player]
 
 ftbacademymod.command_error=No cheating!
+ftbacademymod.graduated=%s has graduated!
