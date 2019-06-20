@@ -3,8 +3,10 @@ package com.feed_the_beast.mods.ftbacademymod;
 import com.feed_the_beast.ftblib.FTBLib;
 import com.feed_the_beast.ftblib.lib.util.NBTUtils;
 import com.feed_the_beast.ftbquests.FTBQuests;
-import net.minecraft.block.Block;
+import com.feed_the_beast.mods.ftbacademymod.net.MessageSyncPhase;
+import com.feed_the_beast.mods.ftbacademymod.net.NetworkHandlerFTBAM;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Biomes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.DimensionType;
@@ -15,7 +17,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 @Mod(
 		modid = FTBAcademyMod.MOD_ID,
@@ -31,12 +32,6 @@ public class FTBAcademyMod
 
 	public static DimensionType dimensionType;
 	public static Biome dimensionBiome;
-
-	@GameRegistry.ObjectHolder(MOD_ID + ":mana_detector")
-	public static Block MANA_DETECTOR;
-
-	@GameRegistry.ObjectHolder(MOD_ID + ":duct_detector")
-	public static Block DUCT_DETECTOR;
 
 	@Mod.EventHandler
 	public void onPreInit(FMLPreInitializationEvent event)
@@ -55,6 +50,8 @@ public class FTBAcademyMod
 		{
 			dimensionBiome = b;
 		}
+
+		NetworkHandlerFTBAM.init();
 	}
 
 	@Mod.EventHandler
@@ -69,15 +66,20 @@ public class FTBAcademyMod
 		return NBTUtils.getPersistedData(player, false).getByte("ftbacademy_tutorial_phase");
 	}
 
-	public static void setTutorialPhase(EntityPlayer player, long tutorialPhase)
+	public static void setTutorialPhase(EntityPlayer player, int tutorialPhase)
 	{
-		if (tutorialPhase <= 0L)
+		if (tutorialPhase <= 0)
 		{
 			NBTUtils.getPersistedData(player, false).removeTag("ftbacademy_tutorial_phase");
 		}
 		else
 		{
 			NBTUtils.getPersistedData(player, true).setByte("ftbacademy_tutorial_phase", (byte) tutorialPhase);
+		}
+
+		if (!player.world.isRemote)
+		{
+			new MessageSyncPhase(tutorialPhase).sendTo((EntityPlayerMP) player);
 		}
 	}
 }

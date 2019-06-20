@@ -1,6 +1,6 @@
 package com.feed_the_beast.mods.ftbacademymod.special;
 
-import com.feed_the_beast.mods.ftbacademymod.FTBAcademyMod;
+import com.feed_the_beast.mods.ftbacademymod.ItemsFTBAM;
 import com.feed_the_beast.mods.ftbacademymod.blocks.BlockManaDetector;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
@@ -24,7 +24,7 @@ public class SpecialManaDetector implements SpecialBlockPlacement
 	@Override
 	public void place(World world, BlockPos pos, EntityPlayerMP player)
 	{
-		world.setBlockState(pos, FTBAcademyMod.MANA_DETECTOR.getDefaultState(), 3);
+		world.setBlockState(pos, ItemsFTBAM.MANA_DETECTOR.getDefaultState(), 3);
 		TileEntity tileEntity = world.getTileEntity(pos);
 
 		if (tileEntity instanceof BlockManaDetector.Entity)

@@ -1,7 +1,10 @@
 package com.feed_the_beast.mods.ftbacademymod;
 
 import com.feed_the_beast.ftblib.events.player.ForgePlayerLoggedInEvent;
+import com.feed_the_beast.ftblib.lib.data.ForgePlayer;
+import com.feed_the_beast.ftblib.lib.data.Universe;
 import com.feed_the_beast.ftblib.lib.math.TeleporterDimPos;
+import com.feed_the_beast.ftbquests.events.ObjectCompletedEvent;
 import com.feed_the_beast.ftbquests.item.FTBQuestsItems;
 import com.feed_the_beast.ftbquests.net.MessageDisplayRewardToast;
 import com.feed_the_beast.ftbquests.net.edit.MessageChangeProgressResponse;
@@ -12,6 +15,7 @@ import com.feed_the_beast.ftbquests.quest.QuestObject;
 import com.feed_the_beast.ftbquests.quest.ServerQuestFile;
 import com.feed_the_beast.mods.ftbacademymod.blocks.BlockDuctDetector;
 import com.feed_the_beast.mods.ftbacademymod.blocks.BlockManaDetector;
+import com.feed_the_beast.mods.ftbacademymod.net.MessageSyncPhase;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialBlockPlacement;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialDetector;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialDuctDetector;
@@ -23,6 +27,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -41,6 +46,7 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.io.File;
@@ -57,7 +63,7 @@ import java.util.Map;
 @Mod.EventBusSubscriber(modid = FTBAcademyMod.MOD_ID)
 public class EventHandlerFTBAM
 {
-	private static final Collection<String> ALLOWED_COMMANDS = new HashSet<>(Arrays.asList("quit_school", "reset_school", "w", "msg", "tell"));
+	private static final Collection<String> ALLOWED_COMMANDS = new HashSet<>(Arrays.asList("quit_school", "reset_school", "w", "msg", "tell", "nbtedit", "kick", "op", "deop", "ban", "stop", "help"));
 	private static Template template = null;
 	private static BlockPos spawn = new BlockPos(0, 0, 0);
 	private static EnumFacing spawnFacing = EnumFacing.NORTH;
@@ -77,8 +83,10 @@ public class EventHandlerFTBAM
 	public static void onPlayerLoggedIn(ForgePlayerLoggedInEvent event)
 	{
 		EntityPlayerMP playerMP = event.getPlayer().getPlayer();
+		int p = FTBAcademyMod.getTutorialPhase(playerMP);
+		new MessageSyncPhase(p).sendTo(playerMP);
 
-		if (FTBAcademyMod.getTutorialPhase(playerMP) == 0)
+		if (p == 0)
 		{
 			teleportToSchool(playerMP);
 		}
@@ -205,7 +213,7 @@ public class EventHandlerFTBAM
 		guideBook.setTranslatableName("item.ftbguides.book.name");
 		p.inventory.addItemStackToInventory(guideBook);
 
-		QuestObject object = ServerQuestFile.INSTANCE.get(QuestFile.getID(ConfigFTBAM.general.quit_school_complete_id));
+		QuestObject object = ServerQuestFile.INSTANCE.get(0x6f61040f);
 
 		if (object != null)
 		{
@@ -249,6 +257,44 @@ public class EventHandlerFTBAM
 		{
 			event.setException(new CommandException("ftbacademymod.command_error"));
 			event.setCanceled(true);
+		}
+	}
+
+	@SubscribeEvent
+	public static void onItemCrafted(PlayerEvent.ItemCraftedEvent event)
+	{
+		if (event.crafting.getItem() == ItemsFTBAM.ALTAR && FTBAcademyMod.getTutorialPhase(event.player) == 1)
+		{
+			NBTTagList list = new NBTTagList();
+			list.appendTag(new NBTTagString("minecraft:quartz_block"));
+			event.crafting.setTagInfo("CanPlaceOn", list);
+		}
+	}
+
+	@SubscribeEvent
+	public static void onTaskCompleted(ObjectCompletedEvent.TaskEvent event)
+	{
+		if (event.getTask().id == 0x1af55e30 && !event.getTask().getQuestFile().isClient())
+		{
+			for (ForgePlayer player : Universe.get().getTeam(event.getTeam().getTeamUID()).getMembers())
+			{
+				if (player.isOnline())
+				{
+					EntityPlayerMP playerMP = player.getPlayer();
+
+					for (int i = 0; i < playerMP.inventory.getSizeInventory(); i++)
+					{
+						if (playerMP.inventory.getStackInSlot(i).getItem() == ItemsFTBAM.FLOWER)
+						{
+							NBTTagList list = new NBTTagList();
+							list.appendTag(new NBTTagString("minecraft:grass"));
+							playerMP.inventory.getStackInSlot(i).setTagInfo("CanPlaceOn", list);
+						}
+					}
+
+					playerMP.inventoryContainer.detectAndSendChanges();
+				}
+			}
 		}
 	}
 }

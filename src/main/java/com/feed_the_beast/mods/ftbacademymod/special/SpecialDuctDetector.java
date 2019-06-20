@@ -1,6 +1,6 @@
 package com.feed_the_beast.mods.ftbacademymod.special;
 
-import com.feed_the_beast.mods.ftbacademymod.FTBAcademyMod;
+import com.feed_the_beast.mods.ftbacademymod.ItemsFTBAM;
 import com.feed_the_beast.mods.ftbacademymod.blocks.BlockDuctDetector;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
@@ -26,7 +26,7 @@ public class SpecialDuctDetector implements SpecialBlockPlacement
 	@Override
 	public void place(World world, BlockPos pos, EntityPlayerMP player)
 	{
-		world.setBlockState(pos, FTBAcademyMod.DUCT_DETECTOR.getDefaultState(), 3);
+		world.setBlockState(pos, ItemsFTBAM.DUCT_DETECTOR.getDefaultState(), 3);
 		TileEntity tileEntity = world.getTileEntity(pos);
 
 		if (tileEntity instanceof BlockDuctDetector.Entity)

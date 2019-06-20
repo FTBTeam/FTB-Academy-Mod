@@ -38,18 +38,18 @@ public class BlockManaDetector extends BlockDetectorBase
 		@Override
 		public NBTTagCompound writeToNBT(NBTTagCompound compound)
 		{
-			distance = compound.getInteger("dist");
-			id = compound.getInteger("object");
-			player = compound.getUniqueId("player");
+			compound.setInteger("dist", distance);
+			compound.setInteger("object", id);
+			compound.setUniqueId("player", player);
 			return super.writeToNBT(compound);
 		}
 
 		@Override
 		public void readFromNBT(NBTTagCompound compound)
 		{
-			compound.setInteger("dist", distance);
-			compound.setInteger("object", id);
-			compound.setUniqueId("player", player);
+			distance = compound.getInteger("dist");
+			id = compound.getInteger("object");
+			player = compound.getUniqueId("player");
 			super.readFromNBT(compound);
 		}
 

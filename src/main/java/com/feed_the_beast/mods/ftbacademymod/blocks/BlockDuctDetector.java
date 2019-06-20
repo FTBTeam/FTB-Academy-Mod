@@ -114,16 +114,6 @@ public class BlockDuctDetector extends BlockDetectorBase
 		@Override
 		public NBTTagCompound writeToNBT(NBTTagCompound compound)
 		{
-			distance = compound.getInteger("dist");
-			id = compound.getInteger("object");
-			player = compound.getUniqueId("player");
-			variant = FilterVariant.VARIANT_MAP.get(compound.getString("variant"));
-			return super.writeToNBT(compound);
-		}
-
-		@Override
-		public void readFromNBT(NBTTagCompound compound)
-		{
 			compound.setInteger("dist", distance);
 			compound.setInteger("object", id);
 			compound.setUniqueId("player", player);
@@ -133,6 +123,16 @@ public class BlockDuctDetector extends BlockDetectorBase
 				compound.setString("variant", variant.name);
 			}
 
+			return super.writeToNBT(compound);
+		}
+
+		@Override
+		public void readFromNBT(NBTTagCompound compound)
+		{
+			distance = compound.getInteger("dist");
+			id = compound.getInteger("object");
+			player = compound.getUniqueId("player");
+			variant = FilterVariant.VARIANT_MAP.get(compound.getString("variant"));
 			super.readFromNBT(compound);
 		}
 
