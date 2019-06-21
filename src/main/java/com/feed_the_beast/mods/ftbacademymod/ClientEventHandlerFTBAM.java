@@ -16,7 +16,7 @@ import java.util.function.BooleanSupplier;
 @Mod.EventBusSubscriber(modid = FTBAcademyMod.MOD_ID, value = Side.CLIENT)
 public class ClientEventHandlerFTBAM
 {
-	private static final BooleanSupplier BUTTON_VISIBILITY = () -> FTBAcademyMod.getTutorialPhase(Minecraft.getMinecraft().player) != 1;
+	private static final BooleanSupplier BUTTON_VISIBILITY = () -> !FTBAcademyMod.isInTutorial(Minecraft.getMinecraft().player);
 	private static final HashSet<ResourceLocation> EXCLUDED_BUTTONS = new HashSet<>();
 
 	static

@@ -41,8 +41,9 @@ public class SpecialTaskScreen implements SpecialBlockPlacement
 			{
 				TileTaskScreenCore screen = (TileTaskScreenCore) tileEntity;
 				screen.team = team;
-				screen.quest = task.quest.id;
 				screen.task = task.id;
+				screen.getTask();
+				world.notifyNeighborsOfStateChange(pos, FTBQuestsBlocks.SCREEN, true);
 			}
 		}
 	}

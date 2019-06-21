@@ -82,4 +82,9 @@ public class FTBAcademyMod
 			new MessageSyncPhase(tutorialPhase).sendTo((EntityPlayerMP) player);
 		}
 	}
+
+	public static boolean isInTutorial(EntityPlayer player)
+	{
+		return getTutorialPhase(player) == 1;
+	}
 }

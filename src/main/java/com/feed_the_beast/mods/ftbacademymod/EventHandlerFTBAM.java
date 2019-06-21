@@ -1,10 +1,7 @@
 package com.feed_the_beast.mods.ftbacademymod;
 
 import com.feed_the_beast.ftblib.events.player.ForgePlayerLoggedInEvent;
-import com.feed_the_beast.ftblib.lib.data.ForgePlayer;
-import com.feed_the_beast.ftblib.lib.data.Universe;
 import com.feed_the_beast.ftblib.lib.math.TeleporterDimPos;
-import com.feed_the_beast.ftbquests.events.ObjectCompletedEvent;
 import com.feed_the_beast.ftbquests.item.FTBQuestsItems;
 import com.feed_the_beast.ftbquests.net.MessageDisplayRewardToast;
 import com.feed_the_beast.ftbquests.net.edit.MessageChangeProgressResponse;
@@ -46,7 +43,7 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.io.File;
@@ -253,7 +250,7 @@ public class EventHandlerFTBAM
 	@SubscribeEvent
 	public static void onCommand(CommandEvent event)
 	{
-		if (event.getSender() instanceof EntityPlayerMP && FTBAcademyMod.getTutorialPhase((EntityPlayerMP) event.getSender()) == 1 && !ALLOWED_COMMANDS.contains(event.getCommand().getName()))
+		if (event.getSender() instanceof EntityPlayerMP && FTBAcademyMod.isInTutorial((EntityPlayerMP) event.getSender()) && !ALLOWED_COMMANDS.contains(event.getCommand().getName()))
 		{
 			event.setException(new CommandException("ftbacademymod.command_error"));
 			event.setCanceled(true);
@@ -261,39 +258,35 @@ public class EventHandlerFTBAM
 	}
 
 	@SubscribeEvent
-	public static void onItemCrafted(PlayerEvent.ItemCraftedEvent event)
+	public static void onPlayerTick(TickEvent.PlayerTickEvent event)
 	{
-		if (event.crafting.getItem() == ItemsFTBAM.ALTAR && FTBAcademyMod.getTutorialPhase(event.player) == 1)
+		if (event.phase == TickEvent.Phase.END && !event.player.world.isRemote && FTBAcademyMod.isInTutorial(event.player))
 		{
-			NBTTagList list = new NBTTagList();
-			list.appendTag(new NBTTagString("minecraft:quartz_block"));
-			event.crafting.setTagInfo("CanPlaceOn", list);
-		}
-	}
+			boolean changed = false;
 
-	@SubscribeEvent
-	public static void onTaskCompleted(ObjectCompletedEvent.TaskEvent event)
-	{
-		if (event.getTask().id == 0x1af55e30 && !event.getTask().getQuestFile().isClient())
-		{
-			for (ForgePlayer player : Universe.get().getTeam(event.getTeam().getTeamUID()).getMembers())
+			for (int i = 0; i < 9; i++)
 			{
-				if (player.isOnline())
+				ItemStack stack = event.player.inventory.mainInventory.get(i);
+
+				if (stack.getItem() == ItemsFTBAM.FLOWER)
 				{
-					EntityPlayerMP playerMP = player.getPlayer();
-
-					for (int i = 0; i < playerMP.inventory.getSizeInventory(); i++)
-					{
-						if (playerMP.inventory.getStackInSlot(i).getItem() == ItemsFTBAM.FLOWER)
-						{
-							NBTTagList list = new NBTTagList();
-							list.appendTag(new NBTTagString("minecraft:grass"));
-							playerMP.inventory.getStackInSlot(i).setTagInfo("CanPlaceOn", list);
-						}
-					}
-
-					playerMP.inventoryContainer.detectAndSendChanges();
+					NBTTagList list = new NBTTagList();
+					list.appendTag(new NBTTagString("minecraft:grass"));
+					stack.setTagInfo("CanPlaceOn", list);
+					changed = true;
 				}
+				else if (stack.getItem() == ItemsFTBAM.ALTAR)
+				{
+					NBTTagList list = new NBTTagList();
+					list.appendTag(new NBTTagString("minecraft:quartz_block"));
+					stack.setTagInfo("CanPlaceOn", list);
+					changed = true;
+				}
+			}
+
+			if (changed)
+			{
+				event.player.inventoryContainer.detectAndSendChanges();
 			}
 		}
 	}
