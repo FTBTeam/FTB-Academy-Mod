@@ -7,9 +7,12 @@ import com.feed_the_beast.ftbquests.net.MessageDisplayRewardToast;
 import com.feed_the_beast.ftbquests.net.edit.MessageChangeProgressResponse;
 import com.feed_the_beast.ftbquests.quest.EnumChangeProgress;
 import com.feed_the_beast.ftbquests.quest.ITeamData;
+import com.feed_the_beast.ftbquests.quest.Quest;
+import com.feed_the_beast.ftbquests.quest.QuestChapter;
 import com.feed_the_beast.ftbquests.quest.QuestFile;
-import com.feed_the_beast.ftbquests.quest.QuestObject;
 import com.feed_the_beast.ftbquests.quest.ServerQuestFile;
+import com.feed_the_beast.ftbquests.quest.reward.QuestReward;
+import com.feed_the_beast.ftbquests.util.FTBQuestsTeamData;
 import com.feed_the_beast.mods.ftbacademymod.blocks.BlockDuctDetector;
 import com.feed_the_beast.mods.ftbacademymod.blocks.BlockManaDetector;
 import com.feed_the_beast.mods.ftbacademymod.net.MessageSyncPhase;
@@ -210,20 +213,29 @@ public class EventHandlerFTBAM
 		guideBook.setTranslatableName("item.ftbguides.book.name");
 		p.inventory.addItemStackToInventory(guideBook);
 
-		QuestObject object = ServerQuestFile.INSTANCE.get(0x6f61040f);
+		QuestChapter chapter = ServerQuestFile.INSTANCE.getChapter(0x6f61040f);
 
-		if (object != null)
+		if (chapter != null)
 		{
-			ITeamData data = ServerQuestFile.INSTANCE.getData(p);
+			FTBQuestsTeamData data = (FTBQuestsTeamData) ServerQuestFile.INSTANCE.getData(p);
 
 			if (data != null)
 			{
 				EnumChangeProgress.sendUpdates = false;
 				MessageDisplayRewardToast.ENABLED = false;
-				object.changeProgress(data, EnumChangeProgress.COMPLETE);
+				chapter.changeProgress(data, EnumChangeProgress.COMPLETE);
+
+				for (Quest quest : chapter.quests)
+				{
+					for (QuestReward reward : quest.rewards)
+					{
+						data.claimReward(p, reward, false);
+					}
+				}
+
 				MessageDisplayRewardToast.ENABLED = true;
 				EnumChangeProgress.sendUpdates = true;
-				new MessageChangeProgressResponse(data.getTeamUID(), object.id, EnumChangeProgress.COMPLETE).sendToAll();
+				new MessageChangeProgressResponse(data.getTeamUID(), chapter.id, EnumChangeProgress.COMPLETE).sendToAll();
 			}
 		}
 
