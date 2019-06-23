@@ -5,6 +5,7 @@ import com.feed_the_beast.ftbquests.block.FTBQuestsBlocks;
 import com.feed_the_beast.ftbquests.quest.ServerQuestFile;
 import com.feed_the_beast.ftbquests.quest.task.QuestTask;
 import com.feed_the_beast.ftbquests.tile.TileTaskScreenCore;
+import com.feed_the_beast.mods.ftbacademymod.net.MessageScreenPlaced;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
@@ -44,6 +45,7 @@ public class SpecialTaskScreen implements SpecialBlockPlacement
 				screen.task = task.id;
 				screen.getTask();
 				world.notifyNeighborsOfStateChange(pos, FTBQuestsBlocks.SCREEN, true);
+				new MessageScreenPlaced(pos, team, task.id).sendTo(player);
 			}
 		}
 	}

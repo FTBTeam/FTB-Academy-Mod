@@ -206,13 +206,6 @@ public class EventHandlerFTBAM
 			spawnpoint = spawnpoint.up(2);
 		}
 
-		p.inventory.clear();
-		p.inventory.addItemStackToInventory(new ItemStack(FTBQuestsItems.BOOK));
-		ItemStack guideBook = new ItemStack(Items.BOOK);
-		guideBook.setTagInfo("guide", new NBTTagString(""));
-		guideBook.setTranslatableName("item.ftbguides.book.name");
-		p.inventory.addItemStackToInventory(guideBook);
-
 		QuestChapter chapter = ServerQuestFile.INSTANCE.getChapter(0x6f61040f);
 
 		if (chapter != null)
@@ -238,6 +231,13 @@ public class EventHandlerFTBAM
 				new MessageChangeProgressResponse(data.getTeamUID(), chapter.id, EnumChangeProgress.COMPLETE).sendToAll();
 			}
 		}
+
+		p.inventory.clear();
+		p.inventory.addItemStackToInventory(new ItemStack(FTBQuestsItems.BOOK));
+		ItemStack guideBook = new ItemStack(Items.BOOK);
+		guideBook.setTagInfo("guide", new NBTTagString(""));
+		guideBook.setTranslatableName("item.ftbguides.book.name");
+		p.inventory.addItemStackToInventory(guideBook);
 
 		p.server.getCommandManager().executeCommand(p.server, "advancement revoke " + p.getName() + " everything");
 		p.server.getCommandManager().executeCommand(p.server, "as reset " + p.getName());

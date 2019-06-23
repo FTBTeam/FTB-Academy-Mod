@@ -14,5 +14,6 @@ public class NetworkHandlerFTBAM
 	{
 		NET = NetworkWrapper.newWrapper(FTBAcademyMod.MOD_ID);
 		NET.register(new MessageSyncPhase());
+		NET.register(new MessageScreenPlaced());
 	}
 }
