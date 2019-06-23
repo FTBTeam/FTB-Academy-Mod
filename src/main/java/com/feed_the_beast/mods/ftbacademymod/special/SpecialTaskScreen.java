@@ -43,6 +43,7 @@ public class SpecialTaskScreen implements SpecialBlockPlacement
 				TileTaskScreenCore screen = (TileTaskScreenCore) tileEntity;
 				screen.team = team;
 				screen.task = task.id;
+				screen.updateContainingBlockInfo();
 				screen.getTask();
 				world.notifyNeighborsOfStateChange(pos, FTBQuestsBlocks.SCREEN, true);
 				new MessageScreenPlaced(pos, team, task.id).sendTo(player);

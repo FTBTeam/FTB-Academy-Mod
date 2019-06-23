@@ -67,6 +67,7 @@ public class MessageScreenPlaced extends MessageToClient
 			TileTaskScreenCore screen = (TileTaskScreenCore) tileEntity;
 			screen.team = team;
 			screen.task = task;
+			screen.updateContainingBlockInfo();
 			screen.getTask();
 			w.notifyNeighborsOfStateChange(pos, FTBQuestsBlocks.SCREEN, true);
 		}
