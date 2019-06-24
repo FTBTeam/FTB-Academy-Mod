@@ -274,6 +274,7 @@ public class EventHandlerFTBAM
 	{
 		if (event.phase == TickEvent.Phase.END && !event.player.world.isRemote && FTBAcademyMod.isInTutorial(event.player))
 		{
+			event.player.getFoodStats().addStats(20, 1F);
 			boolean changed = false;
 
 			for (int i = 0; i < 9; i++)

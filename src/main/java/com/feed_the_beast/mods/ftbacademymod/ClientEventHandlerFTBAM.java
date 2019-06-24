@@ -21,7 +21,6 @@ public class ClientEventHandlerFTBAM
 
 	static
 	{
-		EXCLUDED_BUTTONS.add(new ResourceLocation("ftblib:settings"));
 		EXCLUDED_BUTTONS.add(new ResourceLocation("ftbquests:quests"));
 		EXCLUDED_BUTTONS.add(new ResourceLocation("ftbguides:guides"));
 	}
