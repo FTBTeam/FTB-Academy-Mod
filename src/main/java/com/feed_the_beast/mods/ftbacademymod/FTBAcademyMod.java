@@ -22,7 +22,8 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 		modid = FTBAcademyMod.MOD_ID,
 		name = FTBAcademyMod.MOD_NAME,
 		version = FTBAcademyMod.VERSION,
-		dependencies = FTBLib.THIS_DEP + ";after:" + FTBQuests.MOD_ID
+		dependencies = FTBLib.THIS_DEP + ";after:" + FTBQuests.MOD_ID,
+		acceptableRemoteVersions = "*"
 )
 public class FTBAcademyMod
 {

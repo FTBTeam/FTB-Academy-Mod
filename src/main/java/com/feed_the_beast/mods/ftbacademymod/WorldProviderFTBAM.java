@@ -98,6 +98,12 @@ public class WorldProviderFTBAM extends WorldProvider
 	}
 
 	@Override
+	public void updateWeather()
+	{
+		world.rainingStrength = world.prevRainingStrength = world.thunderingStrength = world.prevThunderingStrength = 0F;
+	}
+
+	@Override
 	public void onWorldSave()
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
