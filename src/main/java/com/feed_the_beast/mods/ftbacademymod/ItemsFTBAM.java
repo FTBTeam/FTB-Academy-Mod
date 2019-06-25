@@ -9,11 +9,8 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  */
 public class ItemsFTBAM
 {
-	@GameRegistry.ObjectHolder(FTBAcademyMod.MOD_ID + ":mana_detector")
-	public static Block MANA_DETECTOR;
-
-	@GameRegistry.ObjectHolder(FTBAcademyMod.MOD_ID + ":duct_detector")
-	public static Block DUCT_DETECTOR;
+	@GameRegistry.ObjectHolder(FTBAcademyMod.MOD_ID + ":detector")
+	public static Block DETECTOR;
 
 	@GameRegistry.ObjectHolder("astralsorcery:blockaltar")
 	public static Item ALTAR;
