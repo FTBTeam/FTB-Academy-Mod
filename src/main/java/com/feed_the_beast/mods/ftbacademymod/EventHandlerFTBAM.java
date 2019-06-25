@@ -5,13 +5,13 @@ import com.feed_the_beast.ftblib.lib.math.TeleporterDimPos;
 import com.feed_the_beast.ftbquests.item.FTBQuestsItems;
 import com.feed_the_beast.ftbquests.net.MessageDisplayRewardToast;
 import com.feed_the_beast.ftbquests.quest.EnumChangeProgress;
-import com.feed_the_beast.ftbquests.quest.ITeamData;
 import com.feed_the_beast.ftbquests.quest.Quest;
 import com.feed_the_beast.ftbquests.quest.QuestChapter;
+import com.feed_the_beast.ftbquests.quest.QuestData;
 import com.feed_the_beast.ftbquests.quest.QuestFile;
 import com.feed_the_beast.ftbquests.quest.ServerQuestFile;
 import com.feed_the_beast.ftbquests.quest.reward.QuestReward;
-import com.feed_the_beast.ftbquests.util.FTBQuestsTeamData;
+import com.feed_the_beast.ftbquests.util.ServerQuestData;
 import com.feed_the_beast.mods.ftbacademymod.blocks.BlockDetector;
 import com.feed_the_beast.mods.ftbacademymod.blocks.EnumDetectorType;
 import com.feed_the_beast.mods.ftbacademymod.net.MessageSyncPhase;
@@ -173,7 +173,7 @@ public class EventHandlerFTBAM
 			entry.getValue().place(world, pos.add(entry.getKey()), p);
 		}
 
-		ITeamData data = ServerQuestFile.INSTANCE.getData(p);
+		QuestData data = ServerQuestFile.INSTANCE.getData(p);
 
 		if (data != null)
 		{
@@ -209,7 +209,7 @@ public class EventHandlerFTBAM
 
 		if (chapter != null)
 		{
-			FTBQuestsTeamData data = (FTBQuestsTeamData) ServerQuestFile.INSTANCE.getData(p);
+			ServerQuestData data = (ServerQuestData) ServerQuestFile.INSTANCE.getData(p);
 
 			if (data != null)
 			{
@@ -221,7 +221,7 @@ public class EventHandlerFTBAM
 				{
 					for (QuestReward reward : quest.rewards)
 					{
-						data.claimReward(p, reward, false);
+						data.setRewardClaimed(p.getUniqueID(), reward);
 					}
 				}
 			}

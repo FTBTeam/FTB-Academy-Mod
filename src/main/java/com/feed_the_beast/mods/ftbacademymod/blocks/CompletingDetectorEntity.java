@@ -2,7 +2,7 @@ package com.feed_the_beast.mods.ftbacademymod.blocks;
 
 import com.feed_the_beast.ftblib.lib.data.FTBLibAPI;
 import com.feed_the_beast.ftbquests.quest.EnumChangeProgress;
-import com.feed_the_beast.ftbquests.quest.ITeamData;
+import com.feed_the_beast.ftbquests.quest.QuestData;
 import com.feed_the_beast.ftbquests.quest.QuestFile;
 import com.feed_the_beast.ftbquests.quest.QuestObject;
 import com.feed_the_beast.ftbquests.quest.ServerQuestFile;
@@ -63,7 +63,7 @@ public class CompletingDetectorEntity extends DetectorEntityBase
 		if (!world.isRemote && world.getTotalWorldTime() % getUpdateFrequency() == 0L)
 		{
 			QuestObject object = ServerQuestFile.INSTANCE.get(id);
-			ITeamData data = ServerQuestFile.INSTANCE.getData(FTBLibAPI.getTeam(player));
+			QuestData data = ServerQuestFile.INSTANCE.getData(FTBLibAPI.getTeam(player));
 
 			if (object != null && data != null)
 			{
