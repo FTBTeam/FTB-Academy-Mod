@@ -4,7 +4,6 @@ import com.feed_the_beast.ftblib.events.player.ForgePlayerLoggedInEvent;
 import com.feed_the_beast.ftblib.lib.math.TeleporterDimPos;
 import com.feed_the_beast.ftbquests.item.FTBQuestsItems;
 import com.feed_the_beast.ftbquests.net.MessageDisplayRewardToast;
-import com.feed_the_beast.ftbquests.net.edit.MessageChangeProgressResponse;
 import com.feed_the_beast.ftbquests.quest.EnumChangeProgress;
 import com.feed_the_beast.ftbquests.quest.ITeamData;
 import com.feed_the_beast.ftbquests.quest.Quest;
@@ -178,10 +177,7 @@ public class EventHandlerFTBAM
 
 		if (data != null)
 		{
-			EnumChangeProgress.sendUpdates = false;
-			ServerQuestFile.INSTANCE.changeProgress(data, EnumChangeProgress.RESET);
-			EnumChangeProgress.sendUpdates = true;
-			new MessageChangeProgressResponse(data.getTeamUID(), ServerQuestFile.INSTANCE.id, EnumChangeProgress.RESET).sendToAll();
+			ServerQuestFile.INSTANCE.forceProgress(data, EnumChangeProgress.RESET, false);
 		}
 
 		p.inventory.clear();
@@ -217,9 +213,9 @@ public class EventHandlerFTBAM
 
 			if (data != null)
 			{
-				EnumChangeProgress.sendUpdates = false;
 				MessageDisplayRewardToast.ENABLED = false;
-				chapter.changeProgress(data, EnumChangeProgress.COMPLETE);
+				chapter.forceProgress(data, EnumChangeProgress.COMPLETE, false);
+				MessageDisplayRewardToast.ENABLED = true;
 
 				for (Quest quest : chapter.quests)
 				{
@@ -228,10 +224,6 @@ public class EventHandlerFTBAM
 						data.claimReward(p, reward, false);
 					}
 				}
-
-				MessageDisplayRewardToast.ENABLED = true;
-				EnumChangeProgress.sendUpdates = true;
-				new MessageChangeProgressResponse(data.getTeamUID(), chapter.id, EnumChangeProgress.COMPLETE).sendToAll();
 			}
 		}
 
