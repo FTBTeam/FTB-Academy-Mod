@@ -61,11 +61,27 @@ import java.util.Map;
 @Mod.EventBusSubscriber(modid = FTBAcademyMod.MOD_ID)
 public class EventHandlerFTBAM
 {
-	private static final Collection<String> ALLOWED_COMMANDS = new HashSet<>(Arrays.asList("quit_school", "reset_school", "w", "msg", "tell", "ftbquests", "nbtedit", "kick", "op", "deop", "ban", "stop", "help"));
+	private static final Collection<String> ALLOWED_COMMANDS = new HashSet<>(Arrays.asList(
+			"quit_school",
+			"reset_school",
+			"w",
+			"msg",
+			"tell",
+			"gamemode",
+			"ftbquests",
+			"nbtedit",
+			"kick",
+			"op",
+			"deop",
+			"ban",
+			"stop",
+			"help"
+	));
+
 	private static Template template = null;
 	private static BlockPos spawn = new BlockPos(0, 0, 0);
 	private static EnumFacing spawnFacing = EnumFacing.NORTH;
-	private static Map<BlockPos, SpecialBlockPlacement> special = new HashMap<>();
+	private static HashMap<BlockPos, SpecialBlockPlacement> special = new HashMap<>();
 
 	@SubscribeEvent
 	public static void registerBlocks(RegistryEvent.Register<Block> event)

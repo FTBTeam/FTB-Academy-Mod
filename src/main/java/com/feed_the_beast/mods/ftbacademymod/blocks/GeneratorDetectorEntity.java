@@ -15,6 +15,7 @@ public class GeneratorDetectorEntity extends CompletingDetectorEntity
 	{
 		if (DUCT_ID.equals(TileEntity.getKey(tileEntity.getClass())))
 		{
+			return tileEntity.serializeNBT().getInteger("Energy") > 0;
 		}
 
 		return false;

@@ -13,10 +13,6 @@ public class FluxDuctDetectorEntity extends CompletingDetectorEntity
 	@Override
 	public boolean test(TileEntity tileEntity)
 	{
-		if (DUCT_ID.equals(TileEntity.getKey(tileEntity.getClass())))
-		{
-		}
-
-		return false;
+		return DUCT_ID.equals(TileEntity.getKey(tileEntity.getClass()));
 	}
 }
