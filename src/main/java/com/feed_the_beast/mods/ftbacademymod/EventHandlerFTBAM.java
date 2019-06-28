@@ -10,7 +10,7 @@ import com.feed_the_beast.ftbquests.quest.Quest;
 import com.feed_the_beast.ftbquests.quest.QuestData;
 import com.feed_the_beast.ftbquests.quest.QuestFile;
 import com.feed_the_beast.ftbquests.quest.ServerQuestFile;
-import com.feed_the_beast.ftbquests.quest.reward.QuestReward;
+import com.feed_the_beast.ftbquests.quest.reward.Reward;
 import com.feed_the_beast.ftbquests.util.ServerQuestData;
 import com.feed_the_beast.mods.ftbacademymod.blocks.BlockDetector;
 import com.feed_the_beast.mods.ftbacademymod.blocks.EnumDetectorType;
@@ -235,7 +235,7 @@ public class EventHandlerFTBAM
 
 				for (Quest quest : chapter.quests)
 				{
-					for (QuestReward reward : quest.rewards)
+					for (Reward reward : quest.rewards)
 					{
 						data.setRewardClaimed(p.getUniqueID(), reward);
 					}
