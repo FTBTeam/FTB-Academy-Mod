@@ -3,7 +3,7 @@ package com.feed_the_beast.mods.ftbacademymod.special;
 import com.feed_the_beast.ftblib.lib.data.FTBLibAPI;
 import com.feed_the_beast.ftbquests.block.FTBQuestsBlocks;
 import com.feed_the_beast.ftbquests.quest.ServerQuestFile;
-import com.feed_the_beast.ftbquests.quest.task.QuestTask;
+import com.feed_the_beast.ftbquests.quest.task.Task;
 import com.feed_the_beast.ftbquests.tile.TileTaskScreenCore;
 import com.feed_the_beast.mods.ftbacademymod.net.MessageScreenPlaced;
 import net.minecraft.block.BlockHorizontal;
@@ -30,7 +30,7 @@ public class SpecialTaskScreen implements SpecialBlockPlacement
 	@Override
 	public void place(World world, BlockPos pos, EntityPlayerMP player)
 	{
-		QuestTask task = ServerQuestFile.INSTANCE.getTask(id);
+		Task task = ServerQuestFile.INSTANCE.getTask(id);
 		String team = FTBLibAPI.getTeam(player.getUniqueID());
 
 		if (task != null && !team.isEmpty())

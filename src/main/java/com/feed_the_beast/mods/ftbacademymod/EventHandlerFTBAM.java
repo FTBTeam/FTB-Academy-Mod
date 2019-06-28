@@ -4,9 +4,9 @@ import com.feed_the_beast.ftblib.events.player.ForgePlayerLoggedInEvent;
 import com.feed_the_beast.ftblib.lib.math.TeleporterDimPos;
 import com.feed_the_beast.ftbquests.item.FTBQuestsItems;
 import com.feed_the_beast.ftbquests.net.MessageDisplayRewardToast;
-import com.feed_the_beast.ftbquests.quest.EnumChangeProgress;
+import com.feed_the_beast.ftbquests.quest.ChangeProgress;
+import com.feed_the_beast.ftbquests.quest.Chapter;
 import com.feed_the_beast.ftbquests.quest.Quest;
-import com.feed_the_beast.ftbquests.quest.QuestChapter;
 import com.feed_the_beast.ftbquests.quest.QuestData;
 import com.feed_the_beast.ftbquests.quest.QuestFile;
 import com.feed_the_beast.ftbquests.quest.ServerQuestFile;
@@ -193,7 +193,7 @@ public class EventHandlerFTBAM
 
 		if (data != null)
 		{
-			ServerQuestFile.INSTANCE.forceProgress(data, EnumChangeProgress.RESET, false);
+			ServerQuestFile.INSTANCE.forceProgress(data, ChangeProgress.RESET, false);
 		}
 
 		p.inventory.clear();
@@ -221,7 +221,7 @@ public class EventHandlerFTBAM
 			spawnpoint = spawnpoint.up(2);
 		}
 
-		QuestChapter chapter = ServerQuestFile.INSTANCE.getChapter(0x6f61040f);
+		Chapter chapter = ServerQuestFile.INSTANCE.getChapter(0x6f61040f);
 
 		if (chapter != null)
 		{
@@ -230,7 +230,7 @@ public class EventHandlerFTBAM
 			if (data != null)
 			{
 				MessageDisplayRewardToast.ENABLED = false;
-				chapter.forceProgress(data, EnumChangeProgress.COMPLETE, false);
+				chapter.forceProgress(data, ChangeProgress.COMPLETE, false);
 				MessageDisplayRewardToast.ENABLED = true;
 
 				for (Quest quest : chapter.quests)

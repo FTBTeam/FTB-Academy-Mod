@@ -1,7 +1,7 @@
 package com.feed_the_beast.mods.ftbacademymod.blocks;
 
 import com.feed_the_beast.ftblib.lib.data.FTBLibAPI;
-import com.feed_the_beast.ftbquests.quest.EnumChangeProgress;
+import com.feed_the_beast.ftbquests.quest.ChangeProgress;
 import com.feed_the_beast.ftbquests.quest.QuestData;
 import com.feed_the_beast.ftbquests.quest.QuestFile;
 import com.feed_the_beast.ftbquests.quest.QuestObject;
@@ -71,7 +71,7 @@ public class CompletingDetectorEntity extends DetectorEntityBase
 
 				if (tileEntity != null && test(tileEntity))
 				{
-					object.forceProgress(data, EnumChangeProgress.COMPLETE, true);
+					object.forceProgress(data, ChangeProgress.COMPLETE, true);
 					world.setBlockToAir(pos);
 				}
 			}
