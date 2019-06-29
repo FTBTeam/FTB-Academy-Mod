@@ -40,6 +40,7 @@ import net.minecraft.world.gen.structure.template.PlacementSettings;
 import net.minecraft.world.gen.structure.template.Template;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -312,6 +313,15 @@ public class EventHandlerFTBAM
 			{
 				event.player.inventoryContainer.detectAndSendChanges();
 			}
+		}
+	}
+
+	@SubscribeEvent
+	public static void onItemRightClick(PlayerInteractEvent.RightClickItem event)
+	{
+		if (FTBAcademyMod.isInTutorial(event.getEntityPlayer()) && event.getItemStack().getItem() == Items.ENDER_PEARL)
+		{
+			event.setCanceled(true);
 		}
 	}
 }
