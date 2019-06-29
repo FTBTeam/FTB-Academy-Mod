@@ -1,11 +1,11 @@
 package com.feed_the_beast.mods.ftbacademymod.special;
 
 import com.feed_the_beast.ftblib.lib.data.FTBLibAPI;
+import com.feed_the_beast.ftblib.lib.util.BlockUtils;
 import com.feed_the_beast.ftbquests.block.FTBQuestsBlocks;
 import com.feed_the_beast.ftbquests.quest.ServerQuestFile;
 import com.feed_the_beast.ftbquests.quest.task.Task;
 import com.feed_the_beast.ftbquests.tile.TileTaskScreenCore;
-import com.feed_the_beast.mods.ftbacademymod.net.MessageScreenPlaced;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
@@ -35,7 +35,7 @@ public class SpecialTaskScreen implements SpecialBlockPlacement
 
 		if (task != null && !team.isEmpty())
 		{
-			world.setBlockState(pos, FTBQuestsBlocks.SCREEN.getDefaultState().withProperty(BlockHorizontal.FACING, facing), 3);
+			world.setBlockState(pos, FTBQuestsBlocks.SCREEN.getDefaultState().withProperty(BlockHorizontal.FACING, facing), BlockUtils.DEFAULT_AND_RERENDER);
 			TileEntity tileEntity = world.getTileEntity(pos);
 
 			if (tileEntity instanceof TileTaskScreenCore)
@@ -43,10 +43,6 @@ public class SpecialTaskScreen implements SpecialBlockPlacement
 				TileTaskScreenCore screen = (TileTaskScreenCore) tileEntity;
 				screen.team = team;
 				screen.task = task.id;
-				screen.updateContainingBlockInfo();
-				screen.getTask();
-				world.notifyNeighborsOfStateChange(pos, FTBQuestsBlocks.SCREEN, true);
-				new MessageScreenPlaced(pos, team, task.id).sendTo(player);
 			}
 		}
 	}
