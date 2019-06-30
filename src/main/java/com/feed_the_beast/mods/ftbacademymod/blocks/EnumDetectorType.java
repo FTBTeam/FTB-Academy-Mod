@@ -19,7 +19,8 @@ public enum EnumDetectorType implements IStringSerializable
 	GENERATOR("generator", 5, GeneratorDetectorEntity.class, GeneratorDetectorEntity::new),
 	FURNACE("furnace", 6, FurnaceDetectorEntity.class, FurnaceDetectorEntity::new),
 	FURNACE_AUG("furnace_aug", 7, FurnaceAugmentDetectorEntity.class, FurnaceAugmentDetectorEntity::new),
-	CELL("cell", 8, CellDetectorEntity.class, CellDetectorEntity::new);
+	CELL("cell", 8, CellDetectorEntity.class, CellDetectorEntity::new),
+	TANK("tank", 9, TankDetectorEntity.class, TankDetectorEntity::new);
 
 	public static final EnumDetectorType[] VALUES = values();
 	public static final Int2ObjectOpenHashMap<EnumDetectorType> META_MAP = new Int2ObjectOpenHashMap<>();
