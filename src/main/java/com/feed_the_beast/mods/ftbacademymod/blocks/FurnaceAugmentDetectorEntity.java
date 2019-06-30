@@ -1,12 +1,14 @@
 package com.feed_the_beast.mods.ftbacademymod.blocks;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.Constants;
 
 /**
  * @author LatvianModder
  */
-public class FurnaceDetectorEntity extends CompletingDetectorEntity
+public class FurnaceAugmentDetectorEntity extends CompletingDetectorEntity
 {
 	public static final ResourceLocation FURNACE_ID = new ResourceLocation("thermalexpansion:machine_furnace");
 
@@ -15,7 +17,8 @@ public class FurnaceDetectorEntity extends CompletingDetectorEntity
 	{
 		if (FURNACE_ID.equals(TileEntity.getKey(tileEntity.getClass())))
 		{
-			return tileEntity.serializeNBT().getInteger("Energy") > 0;
+			NBTTagCompound nbt = tileEntity.serializeNBT();
+			return nbt.getInteger("Level") >= 4 && nbt.getTagList("Augments", Constants.NBT.TAG_COMPOUND).tagCount() >= 4;
 		}
 
 		return false;

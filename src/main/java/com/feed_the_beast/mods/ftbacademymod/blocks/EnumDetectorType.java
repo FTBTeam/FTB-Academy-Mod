@@ -17,7 +17,9 @@ public enum EnumDetectorType implements IStringSerializable
 	THIRD_ITEM_DUCT("third_item_duct", 3, ThirdItemDuctDetectorEntity.class, ThirdItemDuctDetectorEntity::new),
 	FLUX_DUCT("flux_duct", 4, FluxDuctDetectorEntity.class, FluxDuctDetectorEntity::new),
 	GENERATOR("generator", 5, GeneratorDetectorEntity.class, GeneratorDetectorEntity::new),
-	FURNACE("furnace", 6, FurnaceDetectorEntity.class, FurnaceDetectorEntity::new);
+	FURNACE("furnace", 6, FurnaceDetectorEntity.class, FurnaceDetectorEntity::new),
+	FURNACE_AUG("furnace_aug", 7, FurnaceAugmentDetectorEntity.class, FurnaceAugmentDetectorEntity::new),
+	CELL("cell", 8, CellDetectorEntity.class, CellDetectorEntity::new);
 
 	public static final EnumDetectorType[] VALUES = values();
 	public static final Int2ObjectOpenHashMap<EnumDetectorType> META_MAP = new Int2ObjectOpenHashMap<>();
