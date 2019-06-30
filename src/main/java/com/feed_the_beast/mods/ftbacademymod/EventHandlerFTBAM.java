@@ -14,6 +14,7 @@ import com.feed_the_beast.ftbquests.quest.reward.Reward;
 import com.feed_the_beast.ftbquests.util.ServerQuestData;
 import com.feed_the_beast.mods.ftbacademymod.blocks.BlockDetector;
 import com.feed_the_beast.mods.ftbacademymod.blocks.EnumDetectorType;
+import com.feed_the_beast.mods.ftbacademymod.blocks.FilterItem;
 import com.feed_the_beast.mods.ftbacademymod.net.MessageSyncPhase;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialBlockPlacement;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialDetector;
@@ -83,6 +84,14 @@ public class EventHandlerFTBAM
 	private static BlockPos spawn = new BlockPos(0, 0, 0);
 	private static EnumFacing spawnFacing = EnumFacing.NORTH;
 	private static HashMap<BlockPos, SpecialBlockPlacement> special = new HashMap<>();
+	private static HashMap<FilterItem, String> canPlaceOn = new HashMap<>();
+
+	static
+	{
+		canPlaceOn.put(new FilterItem("botania:specialflower"), "minecraft:grass");
+		canPlaceOn.put(new FilterItem("astralsorcery:blockaltar"), "minecraft:quartz_block");
+		canPlaceOn.put(new FilterItem("thermaldynamics:duct_0"), "minecraft:wool");
+	}
 
 	@SubscribeEvent
 	public static void registerBlocks(RegistryEvent.Register<Block> event)
@@ -293,19 +302,17 @@ public class EventHandlerFTBAM
 			{
 				ItemStack stack = event.player.inventory.mainInventory.get(i);
 
-				if (stack.getItem() == ItemsFTBAM.FLOWER)
+				if (!stack.isEmpty() && (!stack.hasTagCompound() || !stack.getTagCompound().hasKey("CanPlaceOn")))
 				{
-					NBTTagList list = new NBTTagList();
-					list.appendTag(new NBTTagString("minecraft:grass"));
-					stack.setTagInfo("CanPlaceOn", list);
-					changed = true;
-				}
-				else if (stack.getItem() == ItemsFTBAM.ALTAR)
-				{
-					NBTTagList list = new NBTTagList();
-					list.appendTag(new NBTTagString("minecraft:quartz_block"));
-					stack.setTagInfo("CanPlaceOn", list);
-					changed = true;
+					String s = canPlaceOn.get(new FilterItem(stack.getItem().getRegistryName().toString(), stack.getMetadata()));
+
+					if (s != null)
+					{
+						NBTTagList list = new NBTTagList();
+						list.appendTag(new NBTTagString(s));
+						stack.setTagInfo("CanPlaceOn", list);
+						changed = true;
+					}
 				}
 			}
 
