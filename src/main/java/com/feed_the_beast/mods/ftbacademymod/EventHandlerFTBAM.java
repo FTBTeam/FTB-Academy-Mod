@@ -3,7 +3,6 @@ package com.feed_the_beast.mods.ftbacademymod;
 import com.feed_the_beast.ftblib.events.player.ForgePlayerLoggedInEvent;
 import com.feed_the_beast.ftblib.lib.math.TeleporterDimPos;
 import com.feed_the_beast.ftbquests.item.FTBQuestsItems;
-import com.feed_the_beast.ftbquests.net.MessageDisplayRewardToast;
 import com.feed_the_beast.ftbquests.quest.ChangeProgress;
 import com.feed_the_beast.ftbquests.quest.Chapter;
 import com.feed_the_beast.ftbquests.quest.Quest;
@@ -239,10 +238,6 @@ public class EventHandlerFTBAM
 
 			if (data != null)
 			{
-				MessageDisplayRewardToast.ENABLED = false;
-				chapter.forceProgress(data, ChangeProgress.COMPLETE, false);
-				MessageDisplayRewardToast.ENABLED = true;
-
 				for (Quest quest : chapter.quests)
 				{
 					for (Reward reward : quest.rewards)
@@ -250,6 +245,8 @@ public class EventHandlerFTBAM
 						data.setRewardClaimed(p.getUniqueID(), reward);
 					}
 				}
+
+				chapter.forceProgress(data, ChangeProgress.COMPLETE, false);
 			}
 		}
 
