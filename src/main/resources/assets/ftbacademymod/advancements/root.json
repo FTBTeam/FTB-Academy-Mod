@@ -1,0 +1,25 @@
+{
+	"display": {
+		"icon": {
+			"item": "ftbquests:book",
+			"data": 1
+		},
+		"title": {
+			"translate": "academy.advancements.root.title"
+		},
+		"description": {
+			"translate": "academy.advancements.root.description"
+		},
+		"background": "minecraft:textures/gui/advancements/backgrounds/stone.png",
+		"show_toast": true,
+		"announce_to_chat": true
+	},
+	"criteria": {
+		"entered_school": {
+			"trigger": "minecraft:changed_dimension",
+			"conditions": {
+				"to": "ftbacademy"
+			}
+		}
+	}
+}

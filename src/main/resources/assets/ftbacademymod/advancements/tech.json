@@ -1,0 +1,26 @@
+{
+	"display": {
+		"icon": {
+			"item": "teslacorelib:energy_tier2"
+		},
+		"title": {
+			"translate": "academy.advancements.tech.title"
+		},
+		"description": {
+			"translate": "academy.advancements.tech.description"
+		}
+	},
+	"parent": "ftbacademymod:automation",
+	"criteria": {
+		"bedrock_in_inventory": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "minecraft:bedrock"
+					}
+				]
+			}
+		}
+	}
+}

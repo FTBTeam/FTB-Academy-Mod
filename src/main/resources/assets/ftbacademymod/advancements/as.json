@@ -1,0 +1,26 @@
+{
+	"display": {
+		"icon": {
+			"item": "astralsorcery:itemshiftingstar"
+		},
+		"title": {
+			"translate": "academy.advancements.as.title"
+		},
+		"description": {
+			"translate": "academy.advancements.as.description"
+		}
+	},
+	"parent": "ftbacademymod:tech",
+	"criteria": {
+		"bedrock_in_inventory": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "minecraft:bedrock"
+					}
+				]
+			}
+		}
+	}
+}

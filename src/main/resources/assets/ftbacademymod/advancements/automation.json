@@ -1,0 +1,26 @@
+{
+	"display": {
+		"icon": {
+			"item": "thermaldynamics:duct_32"
+		},
+		"title": {
+			"translate": "academy.advancements.automation.title"
+		},
+		"description": {
+			"translate": "academy.advancements.automation.description"
+		}
+	},
+	"parent": "ftbacademymod:storage",
+	"criteria": {
+		"bedrock_in_inventory": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "minecraft:bedrock"
+					}
+				]
+			}
+		}
+	}
+}

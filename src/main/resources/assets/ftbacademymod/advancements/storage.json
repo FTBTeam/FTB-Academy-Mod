@@ -1,0 +1,26 @@
+{
+	"display": {
+		"icon": {
+			"item": "minecraft:chest"
+		},
+		"title": {
+			"translate": "academy.advancements.storage.title"
+		},
+		"description": {
+			"translate": "academy.advancements.storage.description"
+		}
+	},
+	"parent": "ftbacademymod:root",
+	"criteria": {
+		"bedrock_in_inventory": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "minecraft:bedrock"
+					}
+				]
+			}
+		}
+	}
+}

@@ -1,0 +1,27 @@
+{
+	"display": {
+		"icon": {
+			"item": "minecraft:fireworks"
+		},
+		"title": {
+			"translate": "academy.advancements.graduated.title"
+		},
+		"description": {
+			"translate": "academy.advancements.graduated.description"
+		},
+		"frame": "challenge"
+	},
+	"parent": "ftbacademymod:botania",
+	"criteria": {
+		"bedrock_in_inventory": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "minecraft:bedrock"
+					}
+				]
+			}
+		}
+	}
+}
