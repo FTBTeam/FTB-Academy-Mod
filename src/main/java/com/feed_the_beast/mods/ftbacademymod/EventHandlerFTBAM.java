@@ -35,6 +35,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.GameType;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.template.PlacementSettings;
 import net.minecraft.world.gen.structure.template.Template;
@@ -269,6 +270,15 @@ public class EventHandlerFTBAM
 		p.setSpawnPoint(spawnpoint, false);
 		p.setGameType(GameType.SURVIVAL);
 		FTBAcademyMod.setTutorialPhase(p, 2);
+
+		if (p.server.getPlayerList().getPlayers().size() == 1)
+		{
+			for (int i = 0; i < p.server.worlds.length; ++i)
+			{
+				WorldServer worldserver = p.server.worlds[i];
+				worldserver.setWorldTime(worldserver.getWorldTime() + (24000L - worldserver.getWorldTime() % 24000L) % 24000L);
+			}
+		}
 	}
 
 	@SubscribeEvent

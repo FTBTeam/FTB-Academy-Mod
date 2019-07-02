@@ -1,7 +1,8 @@
 tile.ftbacademymod.detector.name=FTB Academy Detector
 
-commands.quit_school.usage=/quit_school [player]
-commands.reset_school.usage=/reset_school [player]
+commands.quit_school.usage=/quit_school
+commands.reset_school.usage=/reset_school
+commands.reset_school_for.usage=/reset_school_for <player>
 
 ftbacademymod.command_error=No cheating!
 ftbacademymod.graduated=%s has graduated!

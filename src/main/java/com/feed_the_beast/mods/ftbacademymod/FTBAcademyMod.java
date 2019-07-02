@@ -60,6 +60,7 @@ public class FTBAcademyMod
 	{
 		event.registerServerCommand(new CommandQuitSchool());
 		event.registerServerCommand(new CommandResetSchool());
+		event.registerServerCommand(new CommandResetSchoolFor());
 	}
 
 	public static int getTutorialPhase(EntityPlayer player)
