@@ -19,6 +19,8 @@ import com.feed_the_beast.mods.ftbacademymod.special.SpecialBlockPlacement;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialDetector;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialQuestDetector;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialTaskScreen;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -92,6 +94,18 @@ public class EventHandlerFTBAM
 		canPlaceOn.put(new FilterItem("astralsorcery:blockaltar"), "minecraft:quartz_block");
 		canPlaceOn.put(new FilterItem("thermaldynamics:duct_0"), "minecraft:wool");
 	}
+
+	public static final String[] REVOKE_ADVANCEMENTS = {
+			"astralsorcery:root",
+			"minecraft:story/root",
+			"minecraft:story/mine_stone",
+			"minecraft:story/smelt_iron",
+			"refinedstorage:storing_items",
+			"botania:main/root",
+			"botania:main/flower_pickup",
+			"botania:main/generating_flower",
+			"botania:challenge/root",
+	};
 
 	@SubscribeEvent
 	public static void registerBlocks(RegistryEvent.Register<Block> event)
@@ -257,6 +271,24 @@ public class EventHandlerFTBAM
 		guideBook.setTagInfo("guide", new NBTTagString(""));
 		guideBook.setTranslatableName("item.ftbguides.book.name");
 		p.inventory.addItemStackToInventory(guideBook);
+
+		for (String s : REVOKE_ADVANCEMENTS)
+		{
+			Advancement a = p.server.getAdvancementManager().getAdvancement(new ResourceLocation(s));
+
+			if (a != null)
+			{
+				AdvancementProgress advancementprogress = p.getAdvancements().getProgress(a);
+
+				if (advancementprogress.hasProgress())
+				{
+					for (String s1 : advancementprogress.getCompletedCriteria())
+					{
+						p.getAdvancements().revokeCriterion(a, s1);
+					}
+				}
+			}
+		}
 
 		p.server.getCommandManager().executeCommand(p.server, "advancement revoke " + p.getName() + " everything");
 		p.server.getCommandManager().executeCommand(p.server, "as reset " + p.getName());
