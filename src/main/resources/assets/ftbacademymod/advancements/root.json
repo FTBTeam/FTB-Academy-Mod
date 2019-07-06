@@ -1,7 +1,7 @@
 {
 	"display": {
 		"icon": {
-			"item": "ftbquests:book",
+			"item": "minecraft:enchanted_book",
 			"data": 1
 		},
 		"title": {

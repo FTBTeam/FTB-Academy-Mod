@@ -1,7 +1,7 @@
 {
 	"display": {
 		"icon": {
-			"item": "botanua:twigwand"
+			"item": "botania:twigwand"
 		},
 		"title": {
 			"translate": "academy.advancements.botania.title"
@@ -10,7 +10,7 @@
 			"translate": "academy.advancements.botania.description"
 		}
 	},
-	"parent": "ftbacademymod:as",
+	"parent": "ftbacademymod:root",
 	"criteria": {
 		"bedrock_in_inventory": {
 			"trigger": "minecraft:inventory_changed",

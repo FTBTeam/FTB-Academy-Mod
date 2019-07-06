@@ -10,7 +10,7 @@
 			"translate": "academy.advancements.tech.description"
 		}
 	},
-	"parent": "ftbacademymod:automation",
+	"parent": "ftbacademymod:root",
 	"criteria": {
 		"bedrock_in_inventory": {
 			"trigger": "minecraft:inventory_changed",
