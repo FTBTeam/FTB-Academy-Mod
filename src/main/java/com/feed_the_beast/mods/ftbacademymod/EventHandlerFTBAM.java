@@ -232,6 +232,8 @@ public class EventHandlerFTBAM
 		p.setGameType(GameType.ADVENTURE);
 		FTBAcademyMod.setTutorialPhase(p, 1);
 		provider.schoolsSpawned++;
+
+		p.server.getCommandManager().executeCommand(p.server, "open_tutorial ftbacademy:quests " + p.getName());
 	}
 
 	public static void finishSchool(EntityPlayerMP p)
