@@ -290,7 +290,6 @@ public class EventHandlerFTBAM
 			}
 		}
 
-		p.server.getCommandManager().executeCommand(p.server, "advancement revoke " + p.getName() + " everything");
 		p.server.getCommandManager().executeCommand(p.server, "as reset " + p.getName());
 
 		ITextComponent name = p.getDisplayName();
