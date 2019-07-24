@@ -23,6 +23,7 @@ public class ClientEventHandlerFTBAM
 	{
 		EXCLUDED_BUTTONS.add(new ResourceLocation("ftbquests:quests"));
 		EXCLUDED_BUTTONS.add(new ResourceLocation("ftbguides:guides"));
+		EXCLUDED_BUTTONS.add(new ResourceLocation("ftbtutorialmod:tutorials"));
 	}
 
 	@SubscribeEvent
