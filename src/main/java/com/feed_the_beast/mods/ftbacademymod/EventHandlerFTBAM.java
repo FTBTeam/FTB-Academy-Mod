@@ -93,6 +93,7 @@ public class EventHandlerFTBAM
 		canPlaceOn.put(new FilterItem("botania:specialflower"), "minecraft:grass");
 		canPlaceOn.put(new FilterItem("astralsorcery:blockaltar"), "minecraft:quartz_block");
 		canPlaceOn.put(new FilterItem("thermaldynamics:duct_0"), "minecraft:wool");
+		canPlaceOn.put(new FilterItem("thermalexpansion:cell"), "minecraft:wool");
 	}
 
 	public static final String[] REVOKE_ADVANCEMENTS = {
