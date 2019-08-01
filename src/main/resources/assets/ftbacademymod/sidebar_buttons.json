@@ -1,0 +1,14 @@
+{
+	"reset_school": {
+		"group": "ftbacademymod:school",
+		"icon": "ftblib:icons/refresh",
+		"x": 0,
+		"click": "command:/reset_school"
+	},
+	"quit_school": {
+		"group": "ftbacademymod:school",
+		"icon": "ftblib:icons/right",
+		"x": 100,
+		"click": "command:/quit_school"
+	}
+}

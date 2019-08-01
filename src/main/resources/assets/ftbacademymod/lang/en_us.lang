@@ -6,3 +6,6 @@ commands.reset_school_for.usage=/reset_school_for <player>
 
 ftbacademymod.command_error=No cheating!
 ftbacademymod.graduated=%s has graduated!
+
+sidebar_button.ftbacademymod.reset_school=Reset School
+sidebar_button.ftbacademymod.quit_school=Quit School

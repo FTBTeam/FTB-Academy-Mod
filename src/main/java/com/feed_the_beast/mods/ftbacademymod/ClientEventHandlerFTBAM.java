@@ -16,8 +16,11 @@ import java.util.function.BooleanSupplier;
 @Mod.EventBusSubscriber(modid = FTBAcademyMod.MOD_ID, value = Side.CLIENT)
 public class ClientEventHandlerFTBAM
 {
-	private static final BooleanSupplier BUTTON_VISIBILITY = () -> !FTBAcademyMod.isInTutorial(Minecraft.getMinecraft().player);
+	private static final BooleanSupplier BUTTON_VISIBILITY = () -> FTBAcademyMod.isInTutorial(Minecraft.getMinecraft().player);
+	private static final BooleanSupplier INV_BUTTON_VISIBILITY = () -> !BUTTON_VISIBILITY.getAsBoolean();
 	private static final HashSet<ResourceLocation> EXCLUDED_BUTTONS = new HashSet<>();
+	private static final ResourceLocation RESET_SCHOOL_BUTTON = new ResourceLocation("ftbacademymod:reset_school");
+	private static final ResourceLocation QUIT_SCHOOL_BUTTON = new ResourceLocation("ftbacademymod:quit_school");
 
 	static
 	{
@@ -29,9 +32,13 @@ public class ClientEventHandlerFTBAM
 	@SubscribeEvent
 	public static void onSidebarButtonCreated(SidebarButtonCreatedEvent event)
 	{
-		if (!EXCLUDED_BUTTONS.contains(event.getButton().id))
+		if (event.getButton().id.equals(RESET_SCHOOL_BUTTON) || event.getButton().id.equals(QUIT_SCHOOL_BUTTON))
 		{
 			event.getButton().addVisibilityCondition(BUTTON_VISIBILITY);
+		}
+		else if (!EXCLUDED_BUTTONS.contains(event.getButton().id))
+		{
+			event.getButton().addVisibilityCondition(INV_BUTTON_VISIBILITY);
 		}
 	}
 }
