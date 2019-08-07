@@ -22,7 +22,8 @@ public enum EnumDetectorType implements IStringSerializable
 	CELL("cell", 8, CellDetectorEntity.class, CellDetectorEntity::new),
 	TANK("tank", 9, TankDetectorEntity.class, TankDetectorEntity::new),
 	CRAFTING_TABLE("crafting_table", 10, CraftingTableDetectorEntity.class, CraftingTableDetectorEntity::new),
-	LUMINOUS_CRAFTING_TABLE("luminous_crafting_table", 11, LuminousCraftingTableDetectorEntity.class, LuminousCraftingTableDetectorEntity::new);
+	LUMINOUS_CRAFTING_TABLE("luminous_crafting_table", 11, LuminousCraftingTableDetectorEntity.class, LuminousCraftingTableDetectorEntity::new),
+	ENDO("endo", 12, EndoDetectorEntity.class, EndoDetectorEntity::new);
 
 	public static final EnumDetectorType[] VALUES = values();
 	public static final Int2ObjectOpenHashMap<EnumDetectorType> META_MAP = new Int2ObjectOpenHashMap<>();
