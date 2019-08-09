@@ -8,11 +8,11 @@ import net.minecraft.util.ResourceLocation;
  */
 public class EndoDetectorEntity extends CompletingDetectorEntity
 {
-	public static final ResourceLocation DUCT_ID = new ResourceLocation("botania:specialflower");
+	public static final ResourceLocation ENDO_ID = new ResourceLocation("botania:specialflower");
 
 	@Override
 	public boolean test(TileEntity tileEntity)
 	{
-		return DUCT_ID.equals(TileEntity.getKey(tileEntity.getClass()));
+		return ENDO_ID.equals(TileEntity.getKey(tileEntity.getClass()));
 	}
 }

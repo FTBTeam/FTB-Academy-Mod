@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
  */
 public class LuminousCraftingTableDetectorEntity extends CompletingDetectorEntity
 {
-	public static final ResourceLocation ALTAR_ID = new ResourceLocation("astralsourcery:tilealtar");
+	public static final ResourceLocation ALTAR_ID = new ResourceLocation("astralsorcery:tilealtar");
 
 	@Override
 	public boolean test(TileEntity tileEntity)
