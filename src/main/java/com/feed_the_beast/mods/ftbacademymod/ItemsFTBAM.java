@@ -1,6 +1,7 @@
 package com.feed_the_beast.mods.ftbacademymod;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -10,4 +11,10 @@ public class ItemsFTBAM
 {
 	@GameRegistry.ObjectHolder(FTBAcademyMod.MOD_ID + ":detector")
 	public static Block DETECTOR;
+
+	@GameRegistry.ObjectHolder("thermalfoundation:wrench")
+	public static Item TF_WRENCH;
+
+	@GameRegistry.ObjectHolder("tconstruct:tooltables")
+	public static Item TOOLTABLE;
 }

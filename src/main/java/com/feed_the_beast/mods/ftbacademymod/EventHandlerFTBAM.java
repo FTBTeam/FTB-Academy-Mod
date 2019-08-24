@@ -14,6 +14,8 @@ import com.feed_the_beast.ftbquests.util.ServerQuestData;
 import com.feed_the_beast.mods.ftbacademymod.blocks.BlockDetector;
 import com.feed_the_beast.mods.ftbacademymod.blocks.EnumDetectorType;
 import com.feed_the_beast.mods.ftbacademymod.blocks.FilterItem;
+import com.feed_the_beast.mods.ftbacademymod.blocks.FluxDuctDetectorEntity;
+import com.feed_the_beast.mods.ftbacademymod.blocks.TankDetectorEntity;
 import com.feed_the_beast.mods.ftbacademymod.net.MessageSyncPhase;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialBlockPlacement;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialDetector;
@@ -23,12 +25,15 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandException;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -51,6 +56,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Arrays;
@@ -339,12 +345,19 @@ public class EventHandlerFTBAM
 			event.player.getFoodStats().addStats(20, 1F);
 			boolean changed = false;
 
-			for (int i = 0; i < 9; i++)
+			for (int i = 0; i < event.player.inventory.mainInventory.size(); i++)
 			{
 				ItemStack stack = event.player.inventory.mainInventory.get(i);
 
 				if (!stack.isEmpty() && (!stack.hasTagCompound() || !stack.getTagCompound().hasKey("CanPlaceOn")))
 				{
+					if (stack.getItem() == ItemsFTBAM.TOOLTABLE)
+					{
+						event.player.inventory.mainInventory.set(i, new ItemStack(Blocks.CRAFTING_TABLE));
+						changed = true;
+						continue;
+					}
+
 					String s = canPlaceOn.get(new FilterItem(stack.getItem().getRegistryName().toString(), stack.getMetadata()));
 
 					if (s != null)
@@ -371,5 +384,34 @@ public class EventHandlerFTBAM
 		{
 			event.setCanceled(true);
 		}
+	}
+
+	@SubscribeEvent
+	public static void onItemRightClickOnBlock(PlayerInteractEvent.RightClickBlock event)
+	{
+		if (FTBAcademyMod.isInTutorial(event.getEntityPlayer()) && event.getItemStack().getItem() == ItemsFTBAM.TF_WRENCH)
+		{
+			if (!canRightClickOn(event.getWorld().getTileEntity(event.getPos()), event.getEntityPlayer()))
+			{
+				event.setCanceled(true);
+			}
+		}
+	}
+
+	private static boolean canRightClickOn(@Nullable TileEntity tileEntity, EntityPlayer player)
+	{
+		if (tileEntity != null)
+		{
+			if (player.isSneaking())
+			{
+				return FluxDuctDetectorEntity.DUCT_ID.equals(TileEntity.getKey(tileEntity.getClass()));
+			}
+			else
+			{
+				return TankDetectorEntity.TANK_ID.equals(TileEntity.getKey(tileEntity.getClass()));
+			}
+		}
+
+		return false;
 	}
 }
