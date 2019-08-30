@@ -35,6 +35,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -389,7 +390,7 @@ public class EventHandlerFTBAM
 	@SubscribeEvent
 	public static void onItemRightClickOnBlock(PlayerInteractEvent.RightClickBlock event)
 	{
-		if (FTBAcademyMod.isInTutorial(event.getEntityPlayer()) && event.getItemStack().getItem() == ItemsFTBAM.TF_WRENCH)
+		if (FTBAcademyMod.isInTutorial(event.getEntityPlayer()) && (event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND).getItem() == ItemsFTBAM.TF_WRENCH || event.getEntityPlayer().getHeldItem(EnumHand.OFF_HAND).getItem() == ItemsFTBAM.TF_WRENCH))
 		{
 			if (!canRightClickOn(event.getWorld().getTileEntity(event.getPos()), event.getEntityPlayer()))
 			{
