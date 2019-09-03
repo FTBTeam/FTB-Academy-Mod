@@ -2,10 +2,12 @@ package com.feed_the_beast.mods.ftbacademymod.blocks;
 
 import com.feed_the_beast.ftblib.lib.data.FTBLibAPI;
 import com.feed_the_beast.ftbquests.quest.ChangeProgress;
+import com.feed_the_beast.ftbquests.quest.Quest;
 import com.feed_the_beast.ftbquests.quest.QuestData;
 import com.feed_the_beast.ftbquests.quest.QuestFile;
 import com.feed_the_beast.ftbquests.quest.QuestObject;
 import com.feed_the_beast.ftbquests.quest.ServerQuestFile;
+import com.feed_the_beast.ftbquests.quest.task.Task;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -67,6 +69,11 @@ public class CompletingDetectorEntity extends DetectorEntityBase
 
 			if (object != null && data != null)
 			{
+				if (object instanceof Quest && !((Quest) object).canStartTasks(data) || object instanceof Task && !((Task) object).quest.canStartTasks(data))
+				{
+					return;
+				}
+
 				TileEntity tileEntity = world.getTileEntity(pos.offset(EnumFacing.UP, distance));
 
 				if (tileEntity != null && test(tileEntity))
