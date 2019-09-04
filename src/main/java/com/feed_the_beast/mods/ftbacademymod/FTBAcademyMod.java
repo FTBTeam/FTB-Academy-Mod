@@ -1,12 +1,9 @@
 package com.feed_the_beast.mods.ftbacademymod;
 
 import com.feed_the_beast.ftblib.FTBLib;
-import com.feed_the_beast.ftblib.lib.util.NBTUtils;
 import com.feed_the_beast.ftbquests.FTBQuests;
-import com.feed_the_beast.mods.ftbacademymod.net.MessageSyncPhase;
-import com.feed_the_beast.mods.ftbacademymod.net.NetworkHandlerFTBAM;
+import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Biomes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.DimensionType;
@@ -51,8 +48,6 @@ public class FTBAcademyMod
 		{
 			dimensionBiome = b;
 		}
-
-		NetworkHandlerFTBAM.init();
 	}
 
 	@Mod.EventHandler
@@ -65,24 +60,37 @@ public class FTBAcademyMod
 
 	public static int getTutorialPhase(EntityPlayer player)
 	{
-		return NBTUtils.getPersistedData(player, false).getByte("ftbacademy_tutorial_phase");
+		if (GameStageHelper.hasStage(player, "ftba_in_school"))
+		{
+			return 1;
+		}
+		else if (GameStageHelper.hasStage(player, "ftba_finished_school"))
+		{
+			return 2;
+		}
+
+		return 0;
 	}
 
 	public static void setTutorialPhase(EntityPlayer player, int tutorialPhase)
 	{
-		if (tutorialPhase <= 0)
+		if (tutorialPhase == 0)
 		{
-			NBTUtils.getPersistedData(player, false).removeTag("ftbacademy_tutorial_phase");
+			GameStageHelper.removeStage(player, "ftba_in_school");
+			GameStageHelper.removeStage(player, "ftba_finished_school");
 		}
-		else
+		else if (tutorialPhase == 1)
 		{
-			NBTUtils.getPersistedData(player, true).setByte("ftbacademy_tutorial_phase", (byte) tutorialPhase);
+			GameStageHelper.removeStage(player, "ftba_finished_school");
+			GameStageHelper.addStage(player, "ftba_in_school");
+		}
+		else if (tutorialPhase == 2)
+		{
+			GameStageHelper.removeStage(player, "ftba_in_school");
+			GameStageHelper.addStage(player, "ftba_finished_school");
 		}
 
-		if (!player.world.isRemote)
-		{
-			new MessageSyncPhase(tutorialPhase).sendTo((EntityPlayerMP) player);
-		}
+		GameStageHelper.syncPlayer(player);
 	}
 
 	public static boolean isInTutorial(EntityPlayer player)

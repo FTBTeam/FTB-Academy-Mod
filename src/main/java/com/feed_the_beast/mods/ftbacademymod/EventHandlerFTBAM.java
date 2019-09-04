@@ -2,6 +2,7 @@ package com.feed_the_beast.mods.ftbacademymod;
 
 import com.feed_the_beast.ftblib.events.player.ForgePlayerLoggedInEvent;
 import com.feed_the_beast.ftblib.lib.math.TeleporterDimPos;
+import com.feed_the_beast.ftblib.lib.util.NBTUtils;
 import com.feed_the_beast.ftbquests.item.FTBQuestsItems;
 import com.feed_the_beast.ftbquests.quest.ChangeProgress;
 import com.feed_the_beast.ftbquests.quest.Chapter;
@@ -16,7 +17,6 @@ import com.feed_the_beast.mods.ftbacademymod.blocks.EnumDetectorType;
 import com.feed_the_beast.mods.ftbacademymod.blocks.FilterItem;
 import com.feed_the_beast.mods.ftbacademymod.blocks.FluxDuctDetectorEntity;
 import com.feed_the_beast.mods.ftbacademymod.blocks.TankDetectorEntity;
-import com.feed_the_beast.mods.ftbacademymod.net.MessageSyncPhase;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialBlockPlacement;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialDetector;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialQuestDetector;
@@ -86,7 +86,9 @@ public class EventHandlerFTBAM
 			"deop",
 			"ban",
 			"stop",
-			"help"
+			"help",
+			"gamestage",
+			"kubejs"
 	));
 
 	private static Template template = null;
@@ -130,8 +132,17 @@ public class EventHandlerFTBAM
 	public static void onPlayerLoggedIn(ForgePlayerLoggedInEvent event)
 	{
 		EntityPlayerMP playerMP = event.getPlayer().getPlayer();
+
+		int oldp = NBTUtils.getPersistedData(playerMP, false).getByte("ftbacademy_tutorial_phase");
+
+		if (oldp != 0)
+		{
+			FTBAcademyMod.setTutorialPhase(playerMP, oldp);
+			NBTUtils.getPersistedData(playerMP, false).removeTag("ftbacademy_tutorial_phase");
+			System.out.println("Found old FTB Academy tutorial phase, moving to gamestages");
+		}
+
 		int p = FTBAcademyMod.getTutorialPhase(playerMP);
-		new MessageSyncPhase(p).sendTo(playerMP);
 
 		if (p == 0)
 		{
@@ -320,12 +331,6 @@ public class EventHandlerFTBAM
 				worldserver.setWorldTime(worldserver.getWorldTime() + (24000L - worldserver.getWorldTime() % 24000L) % 24000L);
 			}
 		}
-	}
-
-	@SubscribeEvent
-	public static void onPlayerClone(net.minecraftforge.event.entity.player.PlayerEvent.Clone event)
-	{
-		FTBAcademyMod.setTutorialPhase(event.getEntityPlayer(), FTBAcademyMod.getTutorialPhase(event.getOriginal()));
 	}
 
 	@SubscribeEvent
