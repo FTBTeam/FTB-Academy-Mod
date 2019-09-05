@@ -1,6 +1,7 @@
 package com.feed_the_beast.mods.ftbacademymod;
 
 import com.feed_the_beast.ftblib.events.player.ForgePlayerLoggedInEvent;
+import com.feed_the_beast.ftblib.events.team.ForgeTeamCreatedEvent;
 import com.feed_the_beast.ftblib.lib.math.TeleporterDimPos;
 import com.feed_the_beast.ftblib.lib.util.NBTUtils;
 import com.feed_the_beast.ftbquests.item.FTBQuestsItems;
@@ -148,6 +149,10 @@ public class EventHandlerFTBAM
 		{
 			teleportToSchool(playerMP);
 		}
+		else if (p == 2)
+		{
+			completeSchoolQuests(playerMP);
+		}
 	}
 
 	public static void teleportToSchool(EntityPlayerMP p)
@@ -255,17 +260,8 @@ public class EventHandlerFTBAM
 		p.server.getCommandManager().executeCommand(p.server, "open_tutorial ftbacademy:quests " + p.getName());
 	}
 
-	public static void finishSchool(EntityPlayerMP p)
+	public static void completeSchoolQuests(EntityPlayerMP p)
 	{
-		World world = p.server.getWorld(0);
-
-		BlockPos spawnpoint = world.getSpawnPoint();
-
-		while (world.getBlockState(spawnpoint).isFullCube())
-		{
-			spawnpoint = spawnpoint.up(2);
-		}
-
 		Chapter chapter = ServerQuestFile.INSTANCE.getChapter(0x6f61040f);
 
 		if (chapter != null)
@@ -285,6 +281,20 @@ public class EventHandlerFTBAM
 				chapter.forceProgress(data, ChangeProgress.COMPLETE, false);
 			}
 		}
+	}
+
+	public static void finishSchool(EntityPlayerMP p)
+	{
+		World world = p.server.getWorld(0);
+
+		BlockPos spawnpoint = world.getSpawnPoint();
+
+		while (world.getBlockState(spawnpoint).isFullCube())
+		{
+			spawnpoint = spawnpoint.up(2);
+		}
+
+		completeSchoolQuests(p);
 
 		p.inventory.clear();
 		p.inventory.addItemStackToInventory(new ItemStack(FTBQuestsItems.BOOK));
@@ -419,5 +429,14 @@ public class EventHandlerFTBAM
 		}
 
 		return false;
+	}
+
+	@SubscribeEvent(priority = EventPriority.LOW)
+	public static void onTeamCreated(ForgeTeamCreatedEvent event)
+	{
+		if (event.getTeam().hasOwner() && event.getTeam().owner.isOnline() && FTBAcademyMod.getTutorialPhase(event.getTeam().owner.entityPlayer) == 2)
+		{
+			completeSchoolQuests(event.getTeam().owner.entityPlayer);
+		}
 	}
 }
