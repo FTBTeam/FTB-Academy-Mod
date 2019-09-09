@@ -37,6 +37,6 @@ public class CommandResetSchoolFor extends CommandBase
 			throw new WrongUsageException("commands.reset_school_for.usage");
 		}
 
-		EventHandlerFTBAM.teleportToSchool(getPlayer(server, sender, args[0]));
+		EventHandlerFTBAM.teleportToSchool(getPlayer(server, sender, args[0]), true);
 	}
 }

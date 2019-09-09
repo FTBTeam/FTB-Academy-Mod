@@ -1,12 +1,14 @@
 package com.feed_the_beast.mods.ftbacademymod;
 
 import com.feed_the_beast.ftblib.FTBLib;
+import com.feed_the_beast.ftblib.lib.util.NBTUtils;
 import com.feed_the_beast.ftbquests.FTBQuests;
 import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Biomes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.DimensionType;
+import net.minecraft.world.GameType;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.Mod;
@@ -69,7 +71,17 @@ public class FTBAcademyMod
 			return 2;
 		}
 
-		return 0;
+		int oldp = NBTUtils.getPersistedData(player, false).getByte("ftbacademy_tutorial_phase");
+
+		if (oldp != 0)
+		{
+			setTutorialPhase(player, oldp);
+			NBTUtils.getPersistedData(player, false).removeTag("ftbacademy_tutorial_phase");
+			player.setGameType(GameType.SURVIVAL);
+			System.out.println("Found old FTB Academy tutorial phase, moving to gamestages");
+		}
+
+		return oldp;
 	}
 
 	public static void setTutorialPhase(EntityPlayer player, int tutorialPhase)

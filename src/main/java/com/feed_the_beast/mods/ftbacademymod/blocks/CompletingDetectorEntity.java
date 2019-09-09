@@ -4,7 +4,6 @@ import com.feed_the_beast.ftblib.lib.data.FTBLibAPI;
 import com.feed_the_beast.ftbquests.quest.ChangeProgress;
 import com.feed_the_beast.ftbquests.quest.Quest;
 import com.feed_the_beast.ftbquests.quest.QuestData;
-import com.feed_the_beast.ftbquests.quest.QuestFile;
 import com.feed_the_beast.ftbquests.quest.QuestObject;
 import com.feed_the_beast.ftbquests.quest.ServerQuestFile;
 import com.feed_the_beast.ftbquests.quest.task.Task;
@@ -45,7 +44,7 @@ public class CompletingDetectorEntity extends DetectorEntityBase
 	public void load(EntityPlayerMP ep, Map<String, String> map)
 	{
 		player = ep.getUniqueID();
-		id = QuestFile.getID(map.getOrDefault("id", ""));
+		id = ServerQuestFile.INSTANCE.getID(map.getOrDefault("id", ""));
 		distance = Integer.parseInt(map.getOrDefault("dist", "2"));
 	}
 

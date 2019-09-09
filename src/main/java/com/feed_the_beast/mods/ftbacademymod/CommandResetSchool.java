@@ -42,7 +42,7 @@ public class CommandResetSchool extends CommandBase
 
 		if (FTBAcademyMod.isInTutorial(player))
 		{
-			EventHandlerFTBAM.teleportToSchool(player);
+			EventHandlerFTBAM.teleportToSchool(player, true);
 		}
 	}
 }

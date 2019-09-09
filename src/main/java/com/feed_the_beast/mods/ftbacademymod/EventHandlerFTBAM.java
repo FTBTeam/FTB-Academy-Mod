@@ -3,13 +3,11 @@ package com.feed_the_beast.mods.ftbacademymod;
 import com.feed_the_beast.ftblib.events.player.ForgePlayerLoggedInEvent;
 import com.feed_the_beast.ftblib.events.team.ForgeTeamCreatedEvent;
 import com.feed_the_beast.ftblib.lib.math.TeleporterDimPos;
-import com.feed_the_beast.ftblib.lib.util.NBTUtils;
 import com.feed_the_beast.ftbquests.item.FTBQuestsItems;
 import com.feed_the_beast.ftbquests.quest.ChangeProgress;
 import com.feed_the_beast.ftbquests.quest.Chapter;
 import com.feed_the_beast.ftbquests.quest.Quest;
 import com.feed_the_beast.ftbquests.quest.QuestData;
-import com.feed_the_beast.ftbquests.quest.QuestFile;
 import com.feed_the_beast.ftbquests.quest.ServerQuestFile;
 import com.feed_the_beast.ftbquests.quest.reward.Reward;
 import com.feed_the_beast.ftbquests.util.ServerQuestData;
@@ -42,7 +40,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
@@ -134,20 +131,11 @@ public class EventHandlerFTBAM
 	{
 		EntityPlayerMP playerMP = event.getPlayer().getPlayer();
 
-		int oldp = NBTUtils.getPersistedData(playerMP, false).getByte("ftbacademy_tutorial_phase");
-
-		if (oldp != 0)
-		{
-			FTBAcademyMod.setTutorialPhase(playerMP, oldp);
-			NBTUtils.getPersistedData(playerMP, false).removeTag("ftbacademy_tutorial_phase");
-			System.out.println("Found old FTB Academy tutorial phase, moving to gamestages");
-		}
-
 		int p = FTBAcademyMod.getTutorialPhase(playerMP);
 
 		if (p == 0)
 		{
-			teleportToSchool(playerMP);
+			teleportToSchool(playerMP, false);
 		}
 		else if (p == 2)
 		{
@@ -155,7 +143,7 @@ public class EventHandlerFTBAM
 		}
 	}
 
-	public static void teleportToSchool(EntityPlayerMP p)
+	public static void teleportToSchool(EntityPlayerMP p, boolean reset)
 	{
 		if (template == null)
 		{
@@ -207,10 +195,10 @@ public class EventHandlerFTBAM
 						spawnFacing = EnumFacing.byName(map.getOrDefault("facing", "north"));
 						break;
 					case "quest_detector":
-						special.put(entry.getKey(), new SpecialQuestDetector(QuestFile.getID(map.getOrDefault("id", ""))));
+						special.put(entry.getKey(), new SpecialQuestDetector(ServerQuestFile.INSTANCE.getID(map.getOrDefault("id", ""))));
 						break;
 					case "task_screen":
-						special.put(entry.getKey(), new SpecialTaskScreen(QuestFile.getID(map.getOrDefault("id", "")), EnumFacing.byName(map.getOrDefault("facing", "north"))));
+						special.put(entry.getKey(), new SpecialTaskScreen(ServerQuestFile.INSTANCE.getID(map.getOrDefault("id", "")), EnumFacing.byName(map.getOrDefault("facing", "north"))));
 						break;
 				}
 			}
@@ -237,27 +225,27 @@ public class EventHandlerFTBAM
 			entry.getValue().place(world, pos.add(entry.getKey()), p);
 		}
 
-		QuestData data = ServerQuestFile.INSTANCE.getData(p);
-
-		if (data != null)
+		if (reset)
 		{
-			ServerQuestFile.INSTANCE.forceProgress(data, ChangeProgress.RESET, false);
+			QuestData data = ServerQuestFile.INSTANCE.getData(p);
+
+			if (data != null)
+			{
+				ServerQuestFile.INSTANCE.forceProgress(data, ChangeProgress.RESET, false);
+			}
+
+			p.inventory.clear();
+			p.inventory.addItemStackToInventory(new ItemStack(FTBQuestsItems.BOOK));
 		}
 
-		p.inventory.clear();
-		p.inventory.addItemStackToInventory(new ItemStack(FTBQuestsItems.BOOK));
-		ItemStack guideBook = new ItemStack(Items.BOOK);
-		guideBook.setTagInfo("guide", new NBTTagString(""));
-		guideBook.setTranslatableName("item.ftbguides.book.name");
-		p.inventory.addItemStackToInventory(guideBook);
 		TeleporterDimPos.of(pos.add(spawn), world.provider.getDimension()).teleport(p);
 		p.connection.setPlayerLocation(p.posX, p.posY, p.posZ, spawnFacing.getHorizontalAngle(), 0F);
 		p.setSpawnPoint(pos.add(spawn), true);
-		p.setGameType(GameType.ADVENTURE);
+		//p.setGameType(GameType.ADVENTURE);
 		FTBAcademyMod.setTutorialPhase(p, 1);
 		provider.schoolsSpawned++;
 
-		p.server.getCommandManager().executeCommand(p.server, "open_tutorial ftbacademy:quests " + p.getName());
+		//p.server.getCommandManager().executeCommand(p.server, "open_tutorial ftbacademy:quests " + p.getName());
 	}
 
 	public static void completeSchoolQuests(EntityPlayerMP p)
@@ -330,7 +318,7 @@ public class EventHandlerFTBAM
 		p.inventoryContainer.detectAndSendChanges();
 		TeleporterDimPos.of(spawnpoint, world.provider.getDimension()).teleport(p);
 		p.setSpawnPoint(spawnpoint, false);
-		p.setGameType(GameType.SURVIVAL);
+		//p.setGameType(GameType.SURVIVAL);
 		FTBAcademyMod.setTutorialPhase(p, 2);
 
 		if (p.server.getPlayerList().getPlayers().size() == 1)
