@@ -7,10 +7,13 @@ import com.feed_the_beast.ftbquests.quest.QuestData;
 import com.feed_the_beast.ftbquests.quest.QuestObject;
 import com.feed_the_beast.ftbquests.quest.ServerQuestFile;
 import com.feed_the_beast.ftbquests.quest.task.Task;
+import com.feed_the_beast.mods.ftbacademymod.KubeJSIntegration;
+import dev.latvian.kubejs.world.BlockContainerJS;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 
 import java.util.Map;
 import java.util.UUID;
@@ -18,52 +21,54 @@ import java.util.UUID;
 /**
  * @author LatvianModder
  */
-public class CompletingDetectorEntity extends DetectorEntityBase
+public class BlockDetectorEntity extends TileEntity implements ITickable
 {
 	public UUID player = new UUID(0L, 0L);
-	public int id = 0;
-	public int distance = 0;
+	public String id = "";
+	public int distance = 2;
+	public String type = "";
 
-	@Override
-	public void write(NBTTagCompound nbt)
-	{
-		nbt.setUniqueId("player", player);
-		nbt.setInteger("object", id);
-		nbt.setInteger("dist", distance);
-	}
-
-	@Override
-	public void read(NBTTagCompound nbt)
-	{
-		player = nbt.getUniqueId("player");
-		id = nbt.getInteger("object");
-		distance = nbt.getInteger("dist");
-	}
-
-	@Override
-	public void load(EntityPlayerMP ep, Map<String, String> map)
+	public void load(EntityPlayerMP ep, String t, Map<String, String> map)
 	{
 		player = ep.getUniqueID();
-		id = ServerQuestFile.INSTANCE.getID(map.getOrDefault("id", ""));
+		type = t;
+		id = map.getOrDefault("id", "");
 		distance = Integer.parseInt(map.getOrDefault("dist", "2"));
 	}
 
-	public long getUpdateFrequency()
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
-		return 20L;
+		nbt.setUniqueId("player", player);
+		nbt.setString("type", type);
+		nbt.setString("object", id);
+		nbt.setInteger("dist", distance);
+		return super.writeToNBT(nbt);
 	}
 
-	public boolean test(TileEntity tileEntity)
+	@Override
+	public void readFromNBT(NBTTagCompound nbt)
 	{
-		return false;
+		player = nbt.getUniqueId("player");
+		type = nbt.getString("type");
+		id = nbt.getString("object");
+		distance = nbt.getInteger("dist");
+		super.readFromNBT(nbt);
 	}
 
 	@Override
 	public void update()
 	{
-		if (!world.isRemote && world.getTotalWorldTime() % getUpdateFrequency() == 0L)
+		if (world.isRemote)
 		{
-			QuestObject object = ServerQuestFile.INSTANCE.get(id);
+			return;
+		}
+
+		DetectorPredicate detector = KubeJSIntegration.DETECTORS.get(type);
+
+		if (detector != null && world.getTotalWorldTime() % detector.checkTimer() == 0L)
+		{
+			QuestObject object = ServerQuestFile.INSTANCE.get(ServerQuestFile.INSTANCE.getID(id));
 			QuestData data = ServerQuestFile.INSTANCE.getData(FTBLibAPI.getTeam(player));
 
 			if (object != null && data != null)
@@ -73,11 +78,12 @@ public class CompletingDetectorEntity extends DetectorEntityBase
 					return;
 				}
 
-				TileEntity tileEntity = world.getTileEntity(pos.offset(EnumFacing.UP, distance));
+				BlockContainerJS block = new BlockContainerJS(world, pos.offset(EnumFacing.UP, distance));
 
-				if (tileEntity != null && test(tileEntity))
+				if (detector.check(block))
 				{
 					object.forceProgress(data, ChangeProgress.COMPLETE, true);
+					detector.after(block);
 					world.setBlockToAir(pos);
 				}
 			}

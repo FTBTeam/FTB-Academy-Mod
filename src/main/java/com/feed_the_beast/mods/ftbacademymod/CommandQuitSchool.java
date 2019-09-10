@@ -46,7 +46,7 @@ public class CommandQuitSchool extends CommandBase
 	{
 		EntityPlayerMP playerMP = getCommandSenderAsPlayer(sender);
 
-		if (FTBAcademyMod.isInTutorial(playerMP))
+		if (FTBAcademyMod.isInSchool(playerMP))
 		{
 			EventHandlerFTBAM.finishSchool(playerMP);
 		}

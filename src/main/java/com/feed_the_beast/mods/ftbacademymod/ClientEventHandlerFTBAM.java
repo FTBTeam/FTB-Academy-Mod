@@ -16,7 +16,7 @@ import java.util.function.BooleanSupplier;
 @Mod.EventBusSubscriber(modid = FTBAcademyMod.MOD_ID, value = Side.CLIENT)
 public class ClientEventHandlerFTBAM
 {
-	private static final BooleanSupplier BUTTON_VISIBILITY = () -> FTBAcademyMod.isInTutorial(Minecraft.getMinecraft().player);
+	private static final BooleanSupplier BUTTON_VISIBILITY = () -> FTBAcademyMod.isInSchool(Minecraft.getMinecraft().player);
 	private static final BooleanSupplier INV_BUTTON_VISIBILITY = () -> !BUTTON_VISIBILITY.getAsBoolean();
 	private static final HashSet<ResourceLocation> EXCLUDED_BUTTONS = new HashSet<>();
 	private static final ResourceLocation RESET_SCHOOL_BUTTON = new ResourceLocation("ftbacademymod:reset_school");

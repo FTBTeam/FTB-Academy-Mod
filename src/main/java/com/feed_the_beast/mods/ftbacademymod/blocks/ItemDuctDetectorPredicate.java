@@ -1,5 +1,6 @@
 package com.feed_the_beast.mods.ftbacademymod.blocks;
 
+import dev.latvian.kubejs.world.BlockContainerJS;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -11,37 +12,50 @@ import java.util.HashSet;
 /**
  * @author LatvianModder
  */
-public abstract class ItemDuctDetectorEntity extends CompletingDetectorEntity
+public class ItemDuctDetectorPredicate implements DetectorPredicate
 {
 	public static final ResourceLocation DUCT_ID = new ResourceLocation("thermaldynamics:duct_item_transparent");
 
-	public abstract FilterVariant getVariant();
+	private final int flags;
+	private final HashSet<String> items;
+
+	public ItemDuctDetectorPredicate(int f, String[] i)
+	{
+		flags = f;
+		items = new HashSet<>(i.length);
+
+		for (String s : i)
+		{
+			items.add(new ResourceLocation(s).toString());
+		}
+	}
 
 	@Override
-	public boolean test(TileEntity tileEntity)
+	public boolean check(BlockContainerJS b)
 	{
-		if (DUCT_ID.equals(TileEntity.getKey(tileEntity.getClass())))
+		TileEntity tileEntity = b.getEntity();
+
+		if (tileEntity != null && DUCT_ID.equals(TileEntity.getKey(tileEntity.getClass())))
 		{
 			NBTTagList attachments = tileEntity.writeToNBT(new NBTTagCompound()).getTagList("Attachments", Constants.NBT.TAG_COMPOUND);
 
 			if (attachments.tagCount() == 1)
 			{
 				NBTTagCompound nbt = attachments.getCompoundTagAt(0);
-				FilterVariant variant = getVariant();
 
-				if (nbt.getByte("Flags") == variant.flags)
+				if (nbt.getByte("Flags") == flags)
 				{
-					HashSet<FilterItem> inv = new HashSet<>();
+					HashSet<String> inv = new HashSet<>();
 
 					NBTTagList invList = nbt.getTagList("Inventory", Constants.NBT.TAG_COMPOUND);
 
 					for (int i = 0; i < invList.tagCount(); i++)
 					{
 						NBTTagCompound nbt1 = invList.getCompoundTagAt(i);
-						inv.add(new FilterItem(nbt1.getString("id"), nbt1.getShort("Damage")));
+						inv.add(nbt1.getString("id"));
 					}
 
-					return variant.items.equals(inv);
+					return items.equals(inv);
 				}
 			}
 		}

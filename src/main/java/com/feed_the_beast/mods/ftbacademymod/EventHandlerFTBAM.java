@@ -12,10 +12,8 @@ import com.feed_the_beast.ftbquests.quest.ServerQuestFile;
 import com.feed_the_beast.ftbquests.quest.reward.Reward;
 import com.feed_the_beast.ftbquests.util.ServerQuestData;
 import com.feed_the_beast.mods.ftbacademymod.blocks.BlockDetector;
-import com.feed_the_beast.mods.ftbacademymod.blocks.EnumDetectorType;
+import com.feed_the_beast.mods.ftbacademymod.blocks.BlockDetectorEntity;
 import com.feed_the_beast.mods.ftbacademymod.blocks.FilterItem;
-import com.feed_the_beast.mods.ftbacademymod.blocks.FluxDuctDetectorEntity;
-import com.feed_the_beast.mods.ftbacademymod.blocks.TankDetectorEntity;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialBlockPlacement;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialDetector;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialQuestDetector;
@@ -119,11 +117,7 @@ public class EventHandlerFTBAM
 	public static void registerBlocks(RegistryEvent.Register<Block> event)
 	{
 		event.getRegistry().register(new BlockDetector().setRegistryName("detector"));
-
-		for (EnumDetectorType type : EnumDetectorType.VALUES)
-		{
-			GameRegistry.registerTileEntity(type.clazz, new ResourceLocation(FTBAcademyMod.MOD_ID, "detector_" + type.name));
-		}
+		GameRegistry.registerTileEntity(BlockDetectorEntity.class, new ResourceLocation(FTBAcademyMod.MOD_ID, "detector"));
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOW)
@@ -131,7 +125,7 @@ public class EventHandlerFTBAM
 	{
 		EntityPlayerMP playerMP = event.getPlayer().getPlayer();
 
-		int p = FTBAcademyMod.getTutorialPhase(playerMP);
+		int p = FTBAcademyMod.getSchoolPhase(playerMP);
 
 		if (p == 0)
 		{
@@ -181,11 +175,11 @@ public class EventHandlerFTBAM
 				{
 					case "":
 					{
-						EnumDetectorType type = EnumDetectorType.NAME_MAP.get(map.getOrDefault("detector", ""));
+						String type = map.getOrDefault("detector", "");
+						map.remove("detector");
 
-						if (type != null)
+						if (!type.isEmpty())
 						{
-							map.remove("detector");
 							special.put(entry.getKey(), new SpecialDetector(type, map));
 						}
 					}
@@ -242,7 +236,7 @@ public class EventHandlerFTBAM
 		p.connection.setPlayerLocation(p.posX, p.posY, p.posZ, spawnFacing.getHorizontalAngle(), 0F);
 		p.setSpawnPoint(pos.add(spawn), true);
 		//p.setGameType(GameType.ADVENTURE);
-		FTBAcademyMod.setTutorialPhase(p, 1);
+		FTBAcademyMod.setSchoolPhase(p, 1);
 		provider.schoolsSpawned++;
 
 		//p.server.getCommandManager().executeCommand(p.server, "open_tutorial ftbacademy:quests " + p.getName());
@@ -319,7 +313,7 @@ public class EventHandlerFTBAM
 		TeleporterDimPos.of(spawnpoint, world.provider.getDimension()).teleport(p);
 		p.setSpawnPoint(spawnpoint, false);
 		//p.setGameType(GameType.SURVIVAL);
-		FTBAcademyMod.setTutorialPhase(p, 2);
+		FTBAcademyMod.setSchoolPhase(p, 2);
 
 		if (p.server.getPlayerList().getPlayers().size() == 1)
 		{
@@ -334,7 +328,7 @@ public class EventHandlerFTBAM
 	@SubscribeEvent
 	public static void onCommand(CommandEvent event)
 	{
-		if (event.getSender() instanceof EntityPlayerMP && FTBAcademyMod.isInTutorial((EntityPlayerMP) event.getSender()) && !ALLOWED_COMMANDS.contains(event.getCommand().getName()))
+		if (event.getSender() instanceof EntityPlayerMP && FTBAcademyMod.isInSchool((EntityPlayerMP) event.getSender()) && !ALLOWED_COMMANDS.contains(event.getCommand().getName()))
 		{
 			event.setException(new CommandException("ftbacademymod.command_error"));
 			event.setCanceled(true);
@@ -344,7 +338,7 @@ public class EventHandlerFTBAM
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event)
 	{
-		if (event.phase == TickEvent.Phase.END && !event.player.world.isRemote && FTBAcademyMod.isInTutorial(event.player))
+		if (event.phase == TickEvent.Phase.END && !event.player.world.isRemote && FTBAcademyMod.isInSchool(event.player))
 		{
 			event.player.getFoodStats().addStats(20, 1F);
 			boolean changed = false;
@@ -384,7 +378,7 @@ public class EventHandlerFTBAM
 	@SubscribeEvent
 	public static void onItemRightClick(PlayerInteractEvent.RightClickItem event)
 	{
-		if (FTBAcademyMod.isInTutorial(event.getEntityPlayer()) && event.getItemStack().getItem() == Items.ENDER_PEARL)
+		if (FTBAcademyMod.isInSchool(event.getEntityPlayer()) && event.getItemStack().getItem() == Items.ENDER_PEARL)
 		{
 			event.setCanceled(true);
 		}
@@ -393,7 +387,7 @@ public class EventHandlerFTBAM
 	@SubscribeEvent
 	public static void onItemRightClickOnBlock(PlayerInteractEvent.RightClickBlock event)
 	{
-		if (FTBAcademyMod.isInTutorial(event.getEntityPlayer()) && (event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND).getItem() == ItemsFTBAM.TF_WRENCH || event.getEntityPlayer().getHeldItem(EnumHand.OFF_HAND).getItem() == ItemsFTBAM.TF_WRENCH))
+		if (FTBAcademyMod.isInSchool(event.getEntityPlayer()) && (event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND).getItem() == ItemsFTBAM.TF_WRENCH || event.getEntityPlayer().getHeldItem(EnumHand.OFF_HAND).getItem() == ItemsFTBAM.TF_WRENCH))
 		{
 			if (!canRightClickOn(event.getWorld().getTileEntity(event.getPos()), event.getEntityPlayer()))
 			{
@@ -402,17 +396,20 @@ public class EventHandlerFTBAM
 		}
 	}
 
+	public static final ResourceLocation FLUXDUCT_ID = new ResourceLocation("thermaldynamics:duct_energy_basic");
+	public static final ResourceLocation TANK_ID = new ResourceLocation("thermalexpansion:storage_tank");
+
 	private static boolean canRightClickOn(@Nullable TileEntity tileEntity, EntityPlayer player)
 	{
 		if (tileEntity != null)
 		{
 			if (player.isSneaking())
 			{
-				return FluxDuctDetectorEntity.DUCT_ID.equals(TileEntity.getKey(tileEntity.getClass()));
+				return FLUXDUCT_ID.equals(TileEntity.getKey(tileEntity.getClass()));
 			}
 			else
 			{
-				return TankDetectorEntity.TANK_ID.equals(TileEntity.getKey(tileEntity.getClass()));
+				return TANK_ID.equals(TileEntity.getKey(tileEntity.getClass()));
 			}
 		}
 
@@ -422,7 +419,7 @@ public class EventHandlerFTBAM
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public static void onTeamCreated(ForgeTeamCreatedEvent event)
 	{
-		if (event.getTeam().hasOwner() && event.getTeam().owner.isOnline() && FTBAcademyMod.getTutorialPhase(event.getTeam().owner.entityPlayer) == 2)
+		if (event.getTeam().hasOwner() && event.getTeam().owner.isOnline() && FTBAcademyMod.getSchoolPhase(event.getTeam().owner.entityPlayer) == 2)
 		{
 			completeSchoolQuests(event.getTeam().owner.entityPlayer);
 		}

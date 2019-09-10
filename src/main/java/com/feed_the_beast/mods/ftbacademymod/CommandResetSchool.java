@@ -40,7 +40,7 @@ public class CommandResetSchool extends CommandBase
 	{
 		EntityPlayerMP player = getCommandSenderAsPlayer(sender);
 
-		if (FTBAcademyMod.isInTutorial(player))
+		if (FTBAcademyMod.isInSchool(player))
 		{
 			EventHandlerFTBAM.teleportToSchool(player, true);
 		}

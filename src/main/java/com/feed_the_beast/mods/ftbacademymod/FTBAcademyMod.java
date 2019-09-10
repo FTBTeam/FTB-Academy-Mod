@@ -3,6 +3,7 @@ package com.feed_the_beast.mods.ftbacademymod;
 import com.feed_the_beast.ftblib.FTBLib;
 import com.feed_the_beast.ftblib.lib.util.NBTUtils;
 import com.feed_the_beast.ftbquests.FTBQuests;
+import dev.latvian.kubejs.KubeJS;
 import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Biomes;
@@ -21,7 +22,7 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 		modid = FTBAcademyMod.MOD_ID,
 		name = FTBAcademyMod.MOD_NAME,
 		version = FTBAcademyMod.VERSION,
-		dependencies = FTBLib.THIS_DEP + ";after:" + FTBQuests.MOD_ID,
+		dependencies = FTBLib.THIS_DEP + ";required-after:" + FTBQuests.MOD_ID + ";required-before:" + KubeJS.MOD_ID,
 		acceptableRemoteVersions = "*"
 )
 public class FTBAcademyMod
@@ -60,7 +61,7 @@ public class FTBAcademyMod
 		event.registerServerCommand(new CommandResetSchoolFor());
 	}
 
-	public static int getTutorialPhase(EntityPlayer player)
+	public static int getSchoolPhase(EntityPlayer player)
 	{
 		if (GameStageHelper.hasStage(player, "ftba_in_school"))
 		{
@@ -73,9 +74,9 @@ public class FTBAcademyMod
 
 		int oldp = NBTUtils.getPersistedData(player, false).getByte("ftbacademy_tutorial_phase");
 
-		if (oldp != 0)
+		if (oldp > 0)
 		{
-			setTutorialPhase(player, oldp);
+			setSchoolPhase(player, oldp == 2 ? 2 : 0);
 			NBTUtils.getPersistedData(player, false).removeTag("ftbacademy_tutorial_phase");
 			player.setGameType(GameType.SURVIVAL);
 			System.out.println("Found old FTB Academy tutorial phase, moving to gamestages");
@@ -84,7 +85,7 @@ public class FTBAcademyMod
 		return oldp;
 	}
 
-	public static void setTutorialPhase(EntityPlayer player, int tutorialPhase)
+	public static void setSchoolPhase(EntityPlayer player, int tutorialPhase)
 	{
 		if (tutorialPhase == 0)
 		{
@@ -105,8 +106,8 @@ public class FTBAcademyMod
 		GameStageHelper.syncPlayer(player);
 	}
 
-	public static boolean isInTutorial(EntityPlayer player)
+	public static boolean isInSchool(EntityPlayer player)
 	{
-		return getTutorialPhase(player) == 1;
+		return getSchoolPhase(player) == 1;
 	}
 }
