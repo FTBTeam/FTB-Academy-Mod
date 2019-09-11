@@ -18,6 +18,7 @@ import com.feed_the_beast.mods.ftbacademymod.special.SpecialBlockPlacement;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialDetector;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialQuestDetector;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialTaskScreen;
+import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.block.Block;
@@ -229,13 +230,15 @@ public class EventHandlerFTBAM
 			}
 
 			p.inventory.clear();
-			p.inventory.addItemStackToInventory(new ItemStack(FTBQuestsItems.BOOK));
 		}
+
+		p.inventory.addItemStackToInventory(new ItemStack(FTBQuestsItems.BOOK));
 
 		TeleporterDimPos.of(pos.add(spawn), world.provider.getDimension()).teleport(p);
 		p.connection.setPlayerLocation(p.posX, p.posY, p.posZ, spawnFacing.getHorizontalAngle(), 0F);
 		p.setSpawnPoint(pos.add(spawn), true);
 		//p.setGameType(GameType.ADVENTURE);
+		GameStageHelper.addStage(p, "ftba_welcome_to_academy");
 		FTBAcademyMod.setSchoolPhase(p, 1);
 		provider.schoolsSpawned++;
 
@@ -310,6 +313,7 @@ public class EventHandlerFTBAM
 		p.server.getPlayerList().sendMessage(new TextComponentTranslation("ftbacademymod.graduated", name));
 
 		p.inventoryContainer.detectAndSendChanges();
+		GameStageHelper.getPlayerData(p).clear();
 		TeleporterDimPos.of(spawnpoint, world.provider.getDimension()).teleport(p);
 		p.setSpawnPoint(spawnpoint, false);
 		//p.setGameType(GameType.SURVIVAL);
