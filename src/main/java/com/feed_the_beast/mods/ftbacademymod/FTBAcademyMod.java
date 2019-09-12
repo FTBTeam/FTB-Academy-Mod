@@ -40,6 +40,7 @@ public class FTBAcademyMod
 		dimensionType = DimensionType.register("ftbacademy", "_ftbacademy", ConfigFTBAM.general.dimension_id, WorldProviderFTBAM.class, false);
 		dimensionBiome = Biomes.PLAINS;
 		DimensionManager.registerDimension(ConfigFTBAM.general.dimension_id, dimensionType);
+		KubeJSIntegration.init();
 	}
 
 	@Mod.EventHandler
