@@ -85,7 +85,8 @@ public class EventHandlerFTBAM
 			"stop",
 			"help",
 			"gamestage",
-			"kubejs"
+			"kubejs",
+			"give"
 	));
 
 	private static Template template = null;
@@ -230,6 +231,7 @@ public class EventHandlerFTBAM
 			}
 
 			p.inventory.clear();
+			GameStageHelper.getPlayerData(p).clear();
 		}
 
 		p.inventory.addItemStackToInventory(new ItemStack(FTBQuestsItems.BOOK));
