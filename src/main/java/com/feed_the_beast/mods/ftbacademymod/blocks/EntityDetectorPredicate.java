@@ -47,7 +47,7 @@ public class EntityDetectorPredicate implements DetectorPredicate
 	}
 
 	@Override
-	public void after(BlockContainerJS block)
+	public void post(BlockContainerJS block)
 	{
 		if (after != null)
 		{

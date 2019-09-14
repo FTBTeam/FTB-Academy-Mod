@@ -83,7 +83,7 @@ public class BlockDetectorEntity extends TileEntity implements ITickable
 				if (detector.check(block))
 				{
 					object.forceProgress(data, ChangeProgress.COMPLETE, true);
-					detector.after(block);
+					detector.post(block);
 					world.setBlockToAir(pos);
 				}
 			}

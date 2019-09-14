@@ -10,7 +10,7 @@ public interface DetectorPredicate
 {
 	boolean check(BlockContainerJS block);
 
-	default void after(BlockContainerJS block)
+	default void post(BlockContainerJS block)
 	{
 	}
 
