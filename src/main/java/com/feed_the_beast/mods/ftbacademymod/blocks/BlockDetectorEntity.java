@@ -1,13 +1,16 @@
 package com.feed_the_beast.mods.ftbacademymod.blocks;
 
 import com.feed_the_beast.ftblib.lib.data.FTBLibAPI;
+import com.feed_the_beast.ftblib.lib.util.BlockUtils;
 import com.feed_the_beast.ftbquests.quest.ChangeProgress;
 import com.feed_the_beast.ftbquests.quest.Quest;
 import com.feed_the_beast.ftbquests.quest.QuestData;
 import com.feed_the_beast.ftbquests.quest.QuestObject;
 import com.feed_the_beast.ftbquests.quest.ServerQuestFile;
 import com.feed_the_beast.ftbquests.quest.task.Task;
-import com.feed_the_beast.mods.ftbacademymod.KubeJSIntegration;
+import com.feed_the_beast.mods.ftbacademymod.kubejs.DetectorEntry;
+import com.feed_the_beast.mods.ftbacademymod.kubejs.KubeJSIntegration;
+import dev.latvian.kubejs.util.nbt.NBTCompoundJS;
 import dev.latvian.kubejs.world.BlockContainerJS;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -64,9 +67,9 @@ public class BlockDetectorEntity extends TileEntity implements ITickable
 			return;
 		}
 
-		DetectorPredicate detector = KubeJSIntegration.DETECTORS.get(type);
+		DetectorEntry detector = KubeJSIntegration.DETECTORS.get(type);
 
-		if (detector != null && world.getTotalWorldTime() % detector.checkTimer() == 0L)
+		if (detector != null && world.getTotalWorldTime() % 20L == 0L)
 		{
 			QuestObject object = ServerQuestFile.INSTANCE.get(ServerQuestFile.INSTANCE.getID(id));
 			QuestData data = ServerQuestFile.INSTANCE.getData(FTBLibAPI.getTeam(player));
@@ -80,10 +83,18 @@ public class BlockDetectorEntity extends TileEntity implements ITickable
 
 				BlockContainerJS block = new BlockContainerJS(world, pos.offset(EnumFacing.UP, distance));
 
-				if (detector.check(block))
+				if (detector.predicate.check(block))
 				{
 					object.forceProgress(data, ChangeProgress.COMPLETE, true);
-					detector.post(block);
+
+					if (detector.getAfter() != null)
+					{
+						NBTCompoundJS d = block.getEntityData();
+						detector.getAfter().accept(d);
+						block.setEntityData(d);
+						BlockUtils.notifyBlockUpdate(block.getWorld().world, block.getPos(), null);
+					}
+
 					world.setBlockToAir(pos);
 				}
 			}

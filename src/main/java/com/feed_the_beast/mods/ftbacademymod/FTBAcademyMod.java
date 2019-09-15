@@ -3,6 +3,7 @@ package com.feed_the_beast.mods.ftbacademymod;
 import com.feed_the_beast.ftblib.FTBLib;
 import com.feed_the_beast.ftblib.lib.util.NBTUtils;
 import com.feed_the_beast.ftbquests.FTBQuests;
+import com.feed_the_beast.mods.ftbacademymod.kubejs.KubeJSIntegration;
 import dev.latvian.kubejs.KubeJS;
 import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.entity.player.EntityPlayer;

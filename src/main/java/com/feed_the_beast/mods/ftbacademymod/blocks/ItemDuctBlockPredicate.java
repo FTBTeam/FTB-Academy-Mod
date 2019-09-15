@@ -1,5 +1,6 @@
 package com.feed_the_beast.mods.ftbacademymod.blocks;
 
+import dev.latvian.kubejs.block.predicate.BlockPredicate;
 import dev.latvian.kubejs.world.BlockContainerJS;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -12,14 +13,14 @@ import java.util.HashSet;
 /**
  * @author LatvianModder
  */
-public class ItemDuctDetectorPredicate implements DetectorPredicate
+public class ItemDuctBlockPredicate implements BlockPredicate
 {
 	public static final ResourceLocation DUCT_ID = new ResourceLocation("thermaldynamics:duct_item_transparent");
 
 	private final int flags;
 	private final HashSet<String> items;
 
-	public ItemDuctDetectorPredicate(int f, String[] i)
+	public ItemDuctBlockPredicate(int f, String[] i)
 	{
 		flags = f;
 		items = new HashSet<>(i.length);

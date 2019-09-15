@@ -1,7 +1,6 @@
-package com.feed_the_beast.mods.ftbacademymod;
+package com.feed_the_beast.mods.ftbacademymod.kubejs;
 
-import com.feed_the_beast.mods.ftbacademymod.blocks.DetectorPredicate;
-import com.feed_the_beast.mods.ftbacademymod.blocks.FTBAcademyModWrapper;
+import dev.latvian.kubejs.documentation.DocumentationEvent;
 import dev.latvian.kubejs.script.BindingsEvent;
 import dev.latvian.kubejs.script.ScriptsUnloadedEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -15,7 +14,7 @@ import java.util.Map;
  */
 public class KubeJSIntegration
 {
-	public static final Map<String, DetectorPredicate> DETECTORS = new HashMap<>();
+	public static final Map<String, DetectorEntry> DETECTORS = new HashMap<>();
 
 	public static void init()
 	{
@@ -32,5 +31,12 @@ public class KubeJSIntegration
 	public static void registerBindings(BindingsEvent event)
 	{
 		event.add("ftbacademy", new FTBAcademyModWrapper());
+	}
+
+	@SubscribeEvent
+	public static void registerDocumentation(DocumentationEvent event)
+	{
+		event.registerEvent("ftbacademy.school.started", SchoolStartedEventJS.class).serverOnly();
+		event.registerEvent("ftbacademy.school.ended", SchoolEndedEventJS.class).serverOnly();
 	}
 }

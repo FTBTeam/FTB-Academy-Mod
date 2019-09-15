@@ -12,9 +12,6 @@ public class ItemsFTBAM
 	@GameRegistry.ObjectHolder(FTBAcademyMod.MOD_ID + ":detector")
 	public static Block DETECTOR;
 
-	@GameRegistry.ObjectHolder("thermalfoundation:wrench")
-	public static Item TF_WRENCH;
-
 	@GameRegistry.ObjectHolder("tconstruct:tooltables")
 	public static Item TOOLTABLE;
 }
