@@ -161,10 +161,9 @@ public class EventHandlerFTBAM
 		TeleporterDimPos.of(pos.add(spawn), world.provider.getDimension()).teleport(p);
 		p.connection.setPlayerLocation(p.posX, p.posY, p.posZ, spawnFacing.getHorizontalAngle(), 0F);
 		p.setSpawnPoint(pos.add(spawn), true);
+		EventsJS.post("ftbacademy.school.started", new SchoolStartedEventJS(p, restart));
 		FTBAcademyMod.setSchoolPhase(p, 1);
 		provider.schoolsSpawned++;
-
-		EventsJS.post("ftbacademy.school.started", new SchoolStartedEventJS(p, restart));
 	}
 
 	public static void completeSchoolQuests(EntityPlayerMP p)
