@@ -1,8 +1,10 @@
 package com.feed_the_beast.mods.ftbacademymod.kubejs;
 
 import dev.latvian.kubejs.documentation.DocumentationEvent;
+import dev.latvian.kubejs.event.EventsJS;
 import dev.latvian.kubejs.script.BindingsEvent;
 import dev.latvian.kubejs.script.ScriptsUnloadedEvent;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -38,5 +40,15 @@ public class KubeJSIntegration
 	{
 		event.registerEvent("ftbacademy.school.started", SchoolStartedEventJS.class).serverOnly();
 		event.registerEvent("ftbacademy.school.ended", SchoolEndedEventJS.class).serverOnly();
+	}
+
+	public static void schoolStarted(EntityPlayerMP player, boolean restart)
+	{
+		EventsJS.post("ftbacademy.school.started", new SchoolStartedEventJS(player, restart));
+	}
+
+	public static void schoolEnded(EntityPlayerMP player)
+	{
+		EventsJS.post("ftbacademy.school.ended", new SchoolEndedEventJS(player));
 	}
 }

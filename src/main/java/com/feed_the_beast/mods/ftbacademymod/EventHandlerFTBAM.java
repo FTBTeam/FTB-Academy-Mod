@@ -11,13 +11,11 @@ import com.feed_the_beast.ftbquests.quest.reward.Reward;
 import com.feed_the_beast.ftbquests.util.ServerQuestData;
 import com.feed_the_beast.mods.ftbacademymod.blocks.BlockDetector;
 import com.feed_the_beast.mods.ftbacademymod.blocks.BlockDetectorEntity;
-import com.feed_the_beast.mods.ftbacademymod.kubejs.SchoolEndedEventJS;
-import com.feed_the_beast.mods.ftbacademymod.kubejs.SchoolStartedEventJS;
+import com.feed_the_beast.mods.ftbacademymod.kubejs.KubeJSIntegration;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialBlockPlacement;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialDetector;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialQuestDetector;
 import com.feed_the_beast.mods.ftbacademymod.special.SpecialTaskScreen;
-import dev.latvian.kubejs.event.EventsJS;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -161,7 +159,7 @@ public class EventHandlerFTBAM
 		TeleporterDimPos.of(pos.add(spawn), world.provider.getDimension()).teleport(p);
 		p.connection.setPlayerLocation(p.posX, p.posY, p.posZ, spawnFacing.getHorizontalAngle(), 0F);
 		p.setSpawnPoint(pos.add(spawn), true);
-		EventsJS.post("ftbacademy.school.started", new SchoolStartedEventJS(p, restart));
+		KubeJSIntegration.schoolStarted(p, restart);
 		FTBAcademyMod.setSchoolPhase(p, 1);
 		provider.schoolsSpawned++;
 	}
@@ -201,7 +199,7 @@ public class EventHandlerFTBAM
 		}
 
 		completeSchoolQuests(p);
-		EventsJS.post("ftbacademy.school.ended", new SchoolEndedEventJS(p));
+		KubeJSIntegration.schoolEnded(p);
 		p.inventoryContainer.detectAndSendChanges();
 		TeleporterDimPos.of(spawnpoint, world.provider.getDimension()).teleport(p);
 		p.setSpawnPoint(spawnpoint, false);
