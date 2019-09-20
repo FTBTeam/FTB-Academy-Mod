@@ -166,25 +166,38 @@ public class EventHandlerFTBAM
 
 	public static void completeSchoolQuests(EntityPlayerMP p)
 	{
-		Chapter chapter = ServerQuestFile.INSTANCE.getChapter(0x6f61040f);
+		ServerQuestData data = (ServerQuestData) ServerQuestFile.INSTANCE.getData(p);
 
-		if (chapter != null)
+		if (data == null)
 		{
-			ServerQuestData data = (ServerQuestData) ServerQuestFile.INSTANCE.getData(p);
+			return;
+		}
 
-			if (data != null)
+		Chapter chapter = ServerQuestFile.INSTANCE.getChapter(0x6f61040f);
+		Chapter backend = ServerQuestFile.INSTANCE.getChapter(0x53fecf41);
+
+		if (chapter == null || backend == null)
+		{
+			return;
+		}
+
+		for (Quest quest : chapter.quests)
+		{
+			for (Reward reward : quest.rewards)
 			{
-				for (Quest quest : chapter.quests)
-				{
-					for (Reward reward : quest.rewards)
-					{
-						data.setRewardClaimed(p.getUniqueID(), reward);
-					}
-				}
-
-				chapter.forceProgress(data, ChangeProgress.COMPLETE, false);
+				data.setRewardClaimed(p.getUniqueID(), reward);
 			}
 		}
+
+		for (Quest quest : backend.quests)
+		{
+			for (Reward reward : quest.rewards)
+			{
+				data.setRewardClaimed(p.getUniqueID(), reward);
+			}
+		}
+
+		chapter.forceProgress(data, ChangeProgress.COMPLETE_DEPS, false);
 	}
 
 	public static void finishSchool(EntityPlayerMP p)
