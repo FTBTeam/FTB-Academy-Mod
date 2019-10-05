@@ -2,6 +2,7 @@ package com.feed_the_beast.mods.ftbacademymod;
 
 import com.feed_the_beast.ftblib.events.player.ForgePlayerLoggedInEvent;
 import com.feed_the_beast.ftblib.events.team.ForgeTeamCreatedEvent;
+import com.feed_the_beast.ftblib.lib.data.ForgePlayer;
 import com.feed_the_beast.ftblib.lib.math.TeleporterDimPos;
 import com.feed_the_beast.ftbquests.quest.ChangeProgress;
 import com.feed_the_beast.ftbquests.quest.Chapter;
@@ -232,9 +233,11 @@ public class EventHandlerFTBAM
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public static void onTeamCreated(ForgeTeamCreatedEvent event)
 	{
-		if (event.getTeam().hasOwner() && event.getTeam().owner.isOnline() && FTBAcademyMod.getSchoolPhase(event.getTeam().owner.entityPlayer) == 2)
+		ForgePlayer o = event.getTeam().getOwner();
+
+		if (o != null && o.isOnline() && FTBAcademyMod.getSchoolPhase(o.getPlayer()) == 2)
 		{
-			completeSchoolQuests(event.getTeam().owner.entityPlayer);
+			completeSchoolQuests(o.getPlayer());
 		}
 	}
 }
