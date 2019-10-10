@@ -1,0 +1,34 @@
+tile.ftbacademymod.detector.name=FTB Academy Detektor
+
+commands.quit_school.usage=/quit_school (Um die Schule zu verlassen)
+commands.reset_school.usage=/reset_school (Um die Schule zurückzusetzten)
+commands.reset_school_for.usage=/reset_school_for <player> (Um die Schule für einen bestimmten Spieler <player> zurückzusetzen)
+
+ftbacademymod.command_error=Kein Schummeln!
+ftbacademymod.graduated=%s hat bestanden!
+
+sidebar_button.ftbacademymod.reset_school=Schule zurücksetzten
+sidebar_button.ftbacademymod.quit_school=Schule verlassen
+
+#Advancements
+
+academy.advancements.root.title=Willkommen zu FTB Academy!
+academy.advancements.root.description=Fang an, das Modpack zu spielen.
+
+academy.advancements.storage.title=Zertifikat in Lagersystemen
+academy.advancements.storage.description=Lerne von den verschiedenen Lagermethoden.
+
+academy.advancements.automation.title=Zertifikat in automatisierung
+academy.advancements.automation.description=Lerne, wie du Maschinen, usw. automatisieren kannst.
+
+academy.advancements.tech.title=Zertifikiat in Technik
+academy.advancements.tech.description=Lerne, wie Technikmodifikationen funktionieren.
+
+academy.advancements.as.title=Zertifikat in Astrologie
+academy.advancements.as.description=Lerne über die Astral Sorcery-Modifiaktion.
+
+academy.advancements.botania.title=Zertifikat in Botanik
+academy.advancements.botania.description=Lerne über die Pflanzen der Botania-Modifiaktion.
+
+academy.advancements.graduated.title=Schulabschluss
+academy.advancements.graduated.description=Beende die Schule und setze deine Reise in der Oberwelt fort.
