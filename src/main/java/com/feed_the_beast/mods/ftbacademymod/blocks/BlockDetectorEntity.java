@@ -92,7 +92,7 @@ public class BlockDetectorEntity extends TileEntity implements ITickable
 						NBTCompoundJS d = block.getEntityData();
 						detector.getAfter().accept(d);
 						block.setEntityData(d);
-						BlockUtils.notifyBlockUpdate(block.getWorld().world, block.getPos(), null);
+						BlockUtils.notifyBlockUpdate(block.getWorld().minecraftWorld, block.getPos(), null);
 					}
 
 					world.setBlockToAir(pos);

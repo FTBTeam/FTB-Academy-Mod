@@ -13,7 +13,7 @@ public class FTBAcademyModWrapper
 {
 	public boolean isInSchool(PlayerJS player)
 	{
-		return FTBAcademyMod.isInSchool(player.getPlayerEntity());
+		return FTBAcademyMod.isInSchool(player.minecraftPlayer);
 	}
 
 	public DetectorEntry addDetector(String id, BlockPredicate predicate)
