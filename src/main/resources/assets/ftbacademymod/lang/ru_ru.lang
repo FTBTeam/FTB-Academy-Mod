@@ -1,0 +1,34 @@
+tile.ftbacademymod.detector.name=FTB Academy Detector
+
+commands.quit_school.usage=/quit_school
+commands.reset_school.usage=/reset_school
+commands.reset_school_for.usage=/reset_school_for <player>
+
+ftbacademymod.command_error=Читерить нельзя!
+ftbacademymod.graduated=%s закончил обучение!
+
+sidebar_button.ftbacademymod.reset_school=Перезапустить школу
+sidebar_button.ftbacademymod.quit_school=Покинуть школу
+
+#Advancements
+
+academy.advancements.root.title=Добро пожаловать в академию FTB!
+academy.advancements.root.description=Начните играть в сборку.
+
+academy.advancements.storage.title=Сертификат "Хранение вещей"
+academy.advancements.storage.description=Узнайте о различных способах хранения вещей.
+
+academy.advancements.automation.title=Сертификат "Автоматизация"
+academy.advancements.automation.description=Узнайте как работает автоматизация.
+
+academy.advancements.tech.title=Сертификат "Технологии"
+academy.advancements.tech.description=Узнайте как работают технологические моды.
+
+academy.advancements.as.title=Сертификат "Astral Sorcery"
+academy.advancements.as.description=Узнайте больше о моде Astral Sorcery.
+
+academy.advancements.botania.title=Сертификат "Botania"
+academy.advancements.botania.description=Узнайте больше о моде Botania.
+
+academy.advancements.graduated.title=Доктор наук
+academy.advancements.graduated.description=Завершите обучение в школе и перейдите в Верхний мир.
