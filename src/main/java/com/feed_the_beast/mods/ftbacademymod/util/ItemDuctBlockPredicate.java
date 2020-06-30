@@ -1,4 +1,4 @@
-package com.feed_the_beast.mods.ftbacademymod.blocks;
+package com.feed_the_beast.mods.ftbacademymod.util;
 
 import dev.latvian.kubejs.block.predicate.BlockPredicate;
 import dev.latvian.kubejs.world.BlockContainerJS;

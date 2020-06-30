@@ -8,8 +8,7 @@ import com.feed_the_beast.ftbquests.quest.QuestData;
 import com.feed_the_beast.ftbquests.quest.QuestObject;
 import com.feed_the_beast.ftbquests.quest.ServerQuestFile;
 import com.feed_the_beast.ftbquests.quest.task.Task;
-import com.feed_the_beast.mods.ftbacademymod.kubejs.DetectorEntry;
-import com.feed_the_beast.mods.ftbacademymod.kubejs.KubeJSIntegration;
+import com.feed_the_beast.mods.ftbacademymod.util.DetectorEntry;
 import dev.latvian.kubejs.util.nbt.NBTCompoundJS;
 import dev.latvian.kubejs.world.BlockContainerJS;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -67,7 +66,7 @@ public class BlockDetectorEntity extends TileEntity implements ITickable
 			return;
 		}
 
-		DetectorEntry detector = KubeJSIntegration.DETECTORS.get(type);
+		DetectorEntry detector = DetectorEntry.MAP.get(type);
 
 		if (detector != null && world.getTotalWorldTime() % 20L == 0L)
 		{
@@ -87,10 +86,10 @@ public class BlockDetectorEntity extends TileEntity implements ITickable
 				{
 					object.forceProgress(data, ChangeProgress.COMPLETE, true);
 
-					if (detector.getAfter() != null)
+					if (detector.after != null)
 					{
 						NBTCompoundJS d = block.getEntityData();
-						detector.getAfter().accept(d);
+						detector.after.accept(d);
 						block.setEntityData(d);
 						BlockUtils.notifyBlockUpdate(block.getWorld().minecraftWorld, block.getPos(), null);
 					}

@@ -4,6 +4,9 @@ import com.feed_the_beast.ftblib.FTBLib;
 import com.feed_the_beast.ftblib.lib.util.NBTUtils;
 import com.feed_the_beast.ftbquests.FTBQuests;
 import com.feed_the_beast.mods.ftbacademymod.kubejs.KubeJSIntegration;
+import com.feed_the_beast.mods.ftbacademymod.util.DetectorEntry;
+import com.feed_the_beast.mods.ftbacademymod.util.Interaction;
+import com.feed_the_beast.mods.ftbacademymod.util.LeftClick;
 import dev.latvian.kubejs.KubeJS;
 import net.darkhax.gamestages.GameStageHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -53,6 +56,10 @@ public class FTBAcademyMod
 		{
 			dimensionBiome = b;
 		}
+
+		Interaction.init();
+		LeftClick.init();
+		DetectorEntry.init();
 	}
 
 	@Mod.EventHandler
