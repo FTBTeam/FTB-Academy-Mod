@@ -43,7 +43,7 @@ public class Interaction
 	public static void init()
 	{
 		// Custom interactions where action(event) is fired when you right-click on block with optional item (Have to be first)
-		add().block("minecraft:chest").action(event -> {
+		add().block("minecraft:chest").item("ironchest:wood_iron_chest_upgrade").action(event -> {
 			QuestFile file = FTBQuests.PROXY.getQuestFile(event.getPlayer().minecraftPlayer.world);
 			file.getData(event.getPlayer().minecraftPlayer).getTaskData(file.getTask(0xf126973c)).addProgress(1L);
 
@@ -52,7 +52,7 @@ public class Interaction
 			return true;
 		});
 
-		add().item("minecraft:water_bucket").block("botania:altar").action(event -> {
+		add().block("botania:altar").item("minecraft:water_bucket").action(event -> {
 			event.removeGameStage("b_water");
 			event.addGameStage("b1");
 			return true;
@@ -114,14 +114,14 @@ public class Interaction
 
 
 		//Allow placing down blocks or right-clicking on blocks with items
-		add().item("actuallyadditions:block_coal_generator").block("minecraft:iron_block");
-		add().item("thermaldynamics:duct_0").block("minecraft:wool");
-		add().item("minecraft:crafting_table").block("minecraft:wool");
-		add().item("astralsorcery:blockaltar").block("minecraft:quartz_block");
-		add().itemIDOnly("botania:specialflower").block("minecraft:grass");
-		add().item("minecraft:bucket").block("thermalexpansion:tank");
-		add().item("minecraft:water_bucket").block("thermalexpansion:tank");
-		add().itemIDOnly("thermalexpansion:machine").block("minecraft:lapis_block");
+		add().block("minecraft:iron_block").item("actuallyadditions:block_coal_generator");
+		add().block("minecraft:wool").item("thermaldynamics:duct_0");
+		add().block("minecraft:wool").item("minecraft:crafting_table");
+		add().block("minecraft:quartz_block").item("astralsorcery:blockaltar");
+		add().block("minecraft:grass").itemIDOnly("botania:specialflower");
+		add().block("thermalexpansion:tank").item("minecraft:bucket");
+		add().block("thermalexpansion:tank").item("minecraft:water_bucket");
+		add().block("minecraft:lapis_block").itemIDOnly("thermalexpansion:machine");
 
 		//Allow right-clicking on blocks (Have to be last, because they ignore item, and some others require item)
 		add().block("minecraft:chest");

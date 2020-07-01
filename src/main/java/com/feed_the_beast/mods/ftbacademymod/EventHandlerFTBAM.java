@@ -227,7 +227,7 @@ public class EventHandlerFTBAM
 			ServerQuestFile.INSTANCE.changeProgress(ServerQuestFile.INSTANCE.getData(p), ChangeProgress.RESET);
 			p.inventory.clear();
 
-			for (String s : stageData.getStages())
+			for (String s : new HashSet<>(stageData.getStages()))
 			{
 				stageData.removeStage(s);
 			}
@@ -325,7 +325,7 @@ public class EventHandlerFTBAM
 
 		IStageData stageData = GameStageHelper.getPlayerData(p);
 
-		for (String s : stageData.getStages())
+		for (String s : new HashSet<>(stageData.getStages()))
 		{
 			stageData.removeStage(s);
 		}
